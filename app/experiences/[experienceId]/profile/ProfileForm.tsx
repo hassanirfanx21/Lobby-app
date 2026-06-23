@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfile } from "./actions";
 
@@ -54,6 +54,25 @@ export default function ProfileForm({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const bioRef = useRef<HTMLTextAreaElement>(null);
+
+  function insertPrompt(prompt: string) {
+    const el = bioRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? bio.length;
+    const end = el.selectionEnd ?? bio.length;
+    const before = bio.slice(0, start);
+    const after = bio.slice(end);
+    const needsSpace = before.length > 0 && !before.endsWith(" ") && !before.endsWith("\n");
+    const insertion = (needsSpace ? " " : "") + prompt + " ";
+    const newBio = (before + insertion + after).slice(0, 280);
+    setBio(newBio);
+    requestAnimationFrame(() => {
+      el.focus();
+      const pos = (before + insertion).length;
+      el.setSelectionRange(pos, pos);
+    });
+  }
 
   function toggleTag(tag: string) {
     setTags((prev) =>
@@ -130,12 +149,7 @@ export default function ProfileForm({
           <button
             type="button"
             key={prompt}
-            onClick={() =>
-              setBio((prev) => {
-                const addition = prompt + " ";
-                return (prev ? `${prev.trim()} ${addition}` : addition).slice(0, 280);
-              })
-            }
+            onClick={() => insertPrompt(prompt)}
             className="text-xs px-2.5 py-1 rounded-full border border-dashed border-neutral-300 text-neutral-500 hover:border-neutral-400"
           >
             {prompt}
@@ -143,6 +157,7 @@ export default function ProfileForm({
         ))}
       </div>
       <textarea
+        ref={bioRef}
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         maxLength={280}

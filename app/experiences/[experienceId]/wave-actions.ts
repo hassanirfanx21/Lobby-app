@@ -20,6 +20,7 @@ export async function sendWave(experienceId: string, toUserId: string) {
     experience_id: experienceId,
     from_user_id: userId,
     from_name: whopUser.name ?? whopUser.username,
+    from_username: whopUser.username,
     to_user_id: toUserId,
   });
   if (error) throw new Error(error.message);
@@ -34,22 +35,6 @@ export async function sendWave(experienceId: string, toUserId: string) {
 
   const isMutual = !!(reverseWave && reverseWave.length > 0);
 
-  // Attempt a REAL Whop DM — falls back silently to the in-app banner/notification if it fails
-  let realDmSent = false;
-  try {
-    const dmChannel = await whopsdk.dmChannels.create({
-      company_id: companyId,
-      with_user_ids: [toUserId],
-    });
-    await whopsdk.messages.create({
-      channel_id: dmChannel.id,
-      content: `👋 ${whopUser.name ?? whopUser.username} waved at you on Lobby!`,
-    });
-    realDmSent = true;
-  } catch (err) {
-    console.error("Real DM wave failed:", err);
-  }
-
   await sendPushNotification({
     companyId,
     userIds: [toUserId],
@@ -60,7 +45,7 @@ export async function sendWave(experienceId: string, toUserId: string) {
   });
 
   revalidatePath(`/experiences/${experienceId}`);
-  return { isMutual, realDmSent };
+  return { isMutual };
 }
 
 export async function dismissWaves(experienceId: string) {

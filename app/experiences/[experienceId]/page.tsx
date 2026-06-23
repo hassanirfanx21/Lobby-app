@@ -51,7 +51,7 @@ export default async function ExperiencePage({
 
   const { data: incomingWaves } = await supabase
     .from("waves")
-    .select("from_name, created_at")
+    .select("from_name, from_username, created_at")
     .eq("experience_id", experienceId)
     .eq("to_user_id", userId)
     .eq("seen", false)
@@ -112,7 +112,7 @@ export default async function ExperiencePage({
         )}
 
         {incomingWaves && incomingWaves.length > 0 && (
-          <WaveBanner names={incomingWaves.map((w) => w.from_name)} experienceId={experienceId} />
+          <WaveBanner waves={incomingWaves ?? []} experienceId={experienceId} />
         )}
 
         {!myProfile && (

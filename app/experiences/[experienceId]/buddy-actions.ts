@@ -52,7 +52,7 @@ export async function runBuddyMatching(experienceId: string) {
     (previousMatches ?? []).map((m) => [m.user_id_1, m.user_id_2].sort().join("|"))
   );
 
-  function buildPairs(list: typeof candidates) {
+  function buildPairs(list: NonNullable<typeof candidates>) {
     const result = [];
     for (let i = 0; i + 1 < list.length; i += 2) {
       result.push({

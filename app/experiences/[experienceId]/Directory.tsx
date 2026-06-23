@@ -35,6 +35,7 @@ export default function Directory({
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
   const [wavedIds, setWavedIds] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState<string | null>(null);
 
   const filtered = profiles.filter((p) => {
     const q = query.toLowerCase().trim();
@@ -87,7 +88,10 @@ export default function Directory({
       try {
         const result = await sendWave(experienceId, toUserId);
         setWavedIds((prev) => new Set(prev).add(toUserId));
-        if (result.isMutual) alert("✨ It's a mutual wave!");
+        if (result.isMutual) {
+          setToast("✨ It's a mutual wave!");
+          setTimeout(() => setToast(null), 4000);
+        }
       } catch (err: any) {
         alert(err.message ?? "Couldn't send wave.");
       }
@@ -202,6 +206,11 @@ export default function Directory({
           </div>
         ))}
       </div>
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-full shadow-lg z-50">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

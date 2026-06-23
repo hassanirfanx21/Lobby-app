@@ -8,6 +8,7 @@ import BuddyMatchButton from "./BuddyMatchButton";
 import BuddyReveal from "./BuddyReveal";
 import DigestButton from "./DigestButton";
 import WelcomeModal from "./WelcomeModal";
+import WaveBanner from "./WaveBanner";
 
 export default async function ExperiencePage({
   params,
@@ -53,6 +54,7 @@ export default async function ExperiencePage({
     .select("from_name, created_at")
     .eq("experience_id", experienceId)
     .eq("to_user_id", userId)
+    .eq("seen", false)
     .gte("created_at", new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString())
     .order("created_at", { ascending: false });
 
@@ -110,9 +112,7 @@ export default async function ExperiencePage({
         )}
 
         {incomingWaves && incomingWaves.length > 0 && (
-          <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
-            👋 {incomingWaves.map((w) => w.from_name).join(", ")} waved at you!
-          </div>
+          <WaveBanner names={incomingWaves.map((w) => w.from_name)} experienceId={experienceId} />
         )}
 
         {!myProfile && (

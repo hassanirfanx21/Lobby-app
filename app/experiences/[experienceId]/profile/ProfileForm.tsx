@@ -130,7 +130,12 @@ export default function ProfileForm({
           <button
             type="button"
             key={prompt}
-            onClick={() => setBio((prev) => (prev ? prev : prompt + " "))}
+            onClick={() =>
+              setBio((prev) => {
+                const addition = prompt + " ";
+                return (prev ? `${prev.trim()} ${addition}` : addition).slice(0, 280);
+              })
+            }
             className="text-xs px-2.5 py-1 rounded-full border border-dashed border-neutral-300 text-neutral-500 hover:border-neutral-400"
           >
             {prompt}

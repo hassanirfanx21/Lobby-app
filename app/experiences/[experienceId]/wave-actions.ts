@@ -46,3 +46,14 @@ export async function sendWave(experienceId: string, toUserId: string) {
   revalidatePath(`/experiences/${experienceId}`);
   return { isMutual };
 }
+
+export async function dismissWaves(experienceId: string) {
+  const { userId } = await whopsdk.verifyUserToken(await headers());
+  await supabase
+    .from("waves")
+    .update({ seen: true })
+    .eq("experience_id", experienceId)
+    .eq("to_user_id", userId)
+    .eq("seen", false);
+  revalidatePath(`/experiences/${experienceId}`);
+}

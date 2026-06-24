@@ -23,11 +23,15 @@ export async function saveProfile(formData: FormData) {
   const companyId = experience.company.id;
 
   let joinedAt: string | null = null;
-  for await (const member of whopsdk.members.list({ company_id: companyId })) {
-    if (member.user?.id === userId) {
-      joinedAt = member.joined_at;
-      break;
+  try {
+    for await (const member of whopsdk.members.list({ company_id: companyId })) {
+      if (member.user?.id === userId) {
+        joinedAt = member.joined_at;
+        break;
+      }
     }
+  } catch (err) {
+    console.error("Member lookup failed (continuing without join date):", err);
   }
 
   const whopUser = await whopsdk.users.retrieve(userId);

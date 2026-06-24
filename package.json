@@ -12,6 +12,7 @@
     "@supabase/supabase-js": "^2.108.2",
     "@whop/embedded-components-react-js": "^1.0.0",
     "@whop/embedded-components-vanilla-js": "^1.0.0",
+    "@whop/react": "^0.3.2",
     "@whop/sdk": "^0.0.40",
     "next": "16.2.9",
     "react": "19.2.4",

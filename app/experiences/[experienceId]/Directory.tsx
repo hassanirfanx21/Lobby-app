@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { verifyProfile } from "./badge-actions";
 import { sendWave } from "./wave-actions";
 import Link from "next/link";
@@ -36,6 +36,11 @@ export default function Directory({
   const [isPending, startTransition] = useTransition();
   const [wavedIds, setWavedIds] = useState<Set<string>>(new Set());
   const [toast, setToast] = useState<string | null>(null);
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
 
   const filtered = profiles.filter((p) => {
     const q = query.toLowerCase().trim();
@@ -56,14 +61,14 @@ export default function Directory({
     .map((p) => p.id);
 
   const isNew = (p: Profile) => {
-    const days =
-      (Date.now() - new Date(dateFor(p)).getTime()) / (1000 * 60 * 60 * 24);
+    if (!now) return false;
+    const days = (now - new Date(dateFor(p)).getTime()) / (1000 * 60 * 60 * 24);
     return days < 7;
   };
 
   const isActiveNow = (p: Profile) => {
-    if (!p.last_active_at) return false;
-    const minutes = (Date.now() - new Date(p.last_active_at).getTime()) / (1000 * 60);
+    if (!now || !p.last_active_at) return false;
+    const minutes = (now - new Date(p.last_active_at).getTime()) / (1000 * 60);
     return minutes < 10;
   };
 

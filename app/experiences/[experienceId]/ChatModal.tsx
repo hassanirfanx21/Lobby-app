@@ -30,9 +30,11 @@ export default function ChatModal({
   async function getToken() {
     const res = await fetch("/api/chat-token", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ experienceId }),
     });
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? "Failed to get chat token");
     return data.token;
   }
 

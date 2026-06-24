@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { verifyProfile } from "./badge-actions";
 import { sendWave } from "./wave-actions";
 import Link from "next/link";
-import ChatModal from "./ChatModal";
 
 type Profile = {
   id: string;
@@ -37,7 +36,6 @@ export default function Directory({
   const [isPending, startTransition] = useTransition();
   const [wavedIds, setWavedIds] = useState<Set<string>>(new Set());
   const [toast, setToast] = useState<string | null>(null);
-  const [chatWith, setChatWith] = useState<{ id: string; name: string } | null>(null);
 
   const filtered = profiles.filter((p) => {
     const q = query.toLowerCase().trim();
@@ -173,13 +171,15 @@ export default function Directory({
                 </p>
               )}
               <div className="flex flex-wrap gap-2 mt-3 items-center">
-                {p.user_id !== currentUserId && p.allow_messages && (
-                  <button
-                    onClick={() => setChatWith({ id: p.user_id, name: p.name })}
+                {p.user_id !== currentUserId && p.allow_messages && p.username && (
+                  <a
+                    href={`https://whop.com/@${p.username}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-block text-xs font-medium bg-black text-white px-3 py-1.5 rounded-full hover:bg-neutral-800 transition"
                   >
                     Message
-                  </button>
+                  </a>
                 )}
                 {p.user_id !== currentUserId && (
                   <button
@@ -208,14 +208,6 @@ export default function Directory({
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-full shadow-lg z-50">
           {toast}
         </div>
-      )}
-      {chatWith && (
-        <ChatModal
-          experienceId={experienceId}
-          otherUserId={chatWith.id}
-          otherName={chatWith.name}
-          onClose={() => setChatWith(null)}
-        />
       )}
     </div>
   );

@@ -113,7 +113,7 @@ export default function Directory({
             : "border border-neutral-200 bg-white"
         }`}
       >
-        <Link href={`/experiences/${experienceId}/u/${p.user_id}`} className="relative w-12 h-12 shrink-0">
+        <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false} className="relative w-12 h-12 shrink-0">
           {p.photo_url ? (
             <img src={p.photo_url} alt={p.name} className="w-12 h-12 rounded-full object-cover" />
           ) : (
@@ -124,7 +124,7 @@ export default function Directory({
           )}
         </Link>
         <div className="flex-1">
-          <Link href={`/experiences/${experienceId}/u/${p.user_id}`}>
+          <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false}>
             <p className="font-medium text-neutral-900">
               {p.name}
               {p.user_id === currentUserId && (

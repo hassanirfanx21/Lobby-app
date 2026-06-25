@@ -35,7 +35,7 @@ export default async function ProfileDetailPage({
   return (
     <div className="min-h-screen bg-neutral-50 p-6">
       <div className="max-w-md mx-auto">
-        <Link href={`/experiences/${experienceId}`} className="text-sm text-neutral-500 mb-4 inline-block">
+        <Link href={`/experiences/${experienceId}`} prefetch={false} className="text-sm text-neutral-500 mb-4 inline-block">
           ← Back to directory
         </Link>
         <div className="rounded-2xl border border-neutral-200 bg-white p-6">

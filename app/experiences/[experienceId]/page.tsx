@@ -111,6 +111,7 @@ export default async function ExperiencePage({
           <h1 className="text-2xl font-semibold text-neutral-900">Lobby</h1>
           <Link
             href={`/experiences/${experienceId}/profile`}
+            prefetch={false}
             className="rounded-full bg-black text-white text-sm px-4 py-2 hover:bg-neutral-800 transition"
           >
             {myProfile ? "Edit my profile" : "Fill your profile"}

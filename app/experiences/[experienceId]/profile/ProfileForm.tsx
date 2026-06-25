@@ -26,6 +26,14 @@ const ICEBREAKERS = [
   "Outside this community I...",
 ];
 
+const COORDINATION_OPTIONS = [
+  "📅 Free for a call this week",
+  "🎯 Looking for an accountability partner",
+  "🤝 Open to collab",
+  "💡 Open to mentoring",
+  "🙋 New, want an intro",
+];
+
 export default function ProfileForm({
   experienceId,
   name,
@@ -44,12 +52,14 @@ export default function ProfileForm({
   initialAllowMessages: boolean;
   initialBuddyOptIn: boolean;
   initialStatusLine?: string;
+  initialCoordinationTags?: string[];
 }) {
   const [bio, setBio] = useState(initialBio);
   const [tags, setTags] = useState<string[]>(initialTags);
   const [allowMessages, setAllowMessages] = useState(initialAllowMessages);
   const [buddyOptIn, setBuddyOptIn] = useState(initialBuddyOptIn ?? false);
   const [statusLine, setStatusLine] = useState(initialStatusLine ?? "");
+  const [coordinationTags, setCoordinationTags] = useState<string[]>(initialCoordinationTags ?? []);
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,6 +94,16 @@ export default function ProfileForm({
     );
   }
 
+  function toggleCoordinationTag(tag: string) {
+    setCoordinationTags((prev) =>
+      prev.includes(tag)
+        ? prev.filter((t) => t !== tag)
+        : prev.length < 2
+          ? [...prev, tag]
+          : prev,
+    );
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -93,6 +113,7 @@ export default function ProfileForm({
     formData.set("experienceId", experienceId);
     formData.set("bio", bio);
     tags.forEach((t) => formData.append("tags", t));
+    coordinationTags.forEach((t) => formData.append("coordinationTags", t));
     if (allowMessages) formData.set("allowMessages", "on");
     if (buddyOptIn) formData.set("buddyOptIn", "on");
     formData.set("statusLine", statusLine.slice(0, 50));
@@ -184,6 +205,29 @@ export default function ProfileForm({
                 active
                   ? "bg-black text-white border-black"
                   : "bg-white text-neutral-600 border-neutral-300 hover:border-neutral-400"
+              }`}
+            >
+              {tag}
+            </button>
+          );
+        })}
+      </div>
+
+      <label className="block text-sm font-medium text-neutral-700 mb-2">
+        Current Goals <span className="text-neutral-400">(pick up to 2)</span>
+      </label>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {COORDINATION_OPTIONS.map((tag) => {
+          const active = coordinationTags.includes(tag);
+          return (
+            <button
+              type="button"
+              key={tag}
+              onClick={() => toggleCoordinationTag(tag)}
+              className={`text-sm px-3 py-1.5 rounded-full border transition ${
+                active
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-300"
               }`}
             >
               {tag}

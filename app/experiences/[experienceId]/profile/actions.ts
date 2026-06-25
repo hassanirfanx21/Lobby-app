@@ -9,6 +9,7 @@ export async function saveProfile(formData: FormData) {
   const experienceId = formData.get("experienceId") as string;
   const bio = (formData.get("bio") as string)?.slice(0, 280) ?? "";
   const tags = formData.getAll("tags") as string[];
+  const coordinationTags = formData.getAll("coordinationTags") as string[];
   const allowMessages = formData.get("allowMessages") === "on";
   const buddyOptIn = formData.get("buddyOptIn") === "on";
   const statusLine = (formData.get("statusLine") as string)?.slice(0, 50) ?? "";
@@ -54,6 +55,7 @@ export async function saveProfile(formData: FormData) {
       photo_url: whopUser.profile_picture?.url ?? null,
       bio,
       tags,
+      coordination_tags: coordinationTags,
       allow_messages: allowMessages,
       buddy_opt_in: buddyOptIn,
       status_line: statusLine,

@@ -10,6 +10,9 @@ import DigestButton from "./DigestButton";
 import WelcomeAndTutorial from "./WelcomeAndTutorial";
 import WaveBanner from "./WaveBanner";
 import ProfileViewBanner from "./ProfileViewBanner";
+import { getCurrentBoost } from "./boost-actions";
+import BoostButton from "./BoostButton";
+import OpenToChatToggle from "./OpenToChatToggle";
 
 export default async function ExperiencePage({
   params,
@@ -104,6 +107,8 @@ export default async function ExperiencePage({
       : myMatch.name_1
     : null;
 
+  const currentBoost = await getCurrentBoost(experienceId);
+
   return (
     <div className="min-h-screen bg-neutral-50 p-6">
       <div className="max-w-3xl mx-auto">
@@ -119,6 +124,19 @@ export default async function ExperiencePage({
         </header>
 
         <WelcomeAndTutorial experienceId={experienceId} hasProfile={!!myProfile} />
+
+        {myProfile && (
+          <div className="flex gap-2 mb-4">
+            <BoostButton experienceId={experienceId} />
+            <OpenToChatToggle experienceId={experienceId} initialOpen={!!myProfile?.open_to_chat} />
+          </div>
+        )}
+
+        {currentBoost && (
+          <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            🚀 <strong>{currentBoost.name}</strong> is boosted: "{currentBoost.reason}"
+          </div>
+        )}
 
         {access.access_level === "admin" && (
           <BuddyMatchButton experienceId={experienceId} />

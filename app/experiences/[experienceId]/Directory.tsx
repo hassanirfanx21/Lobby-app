@@ -19,6 +19,9 @@ type Profile = {
   is_verified?: boolean;
   status_line?: string | null;
   last_active_at?: string | null;
+  coordination_tags?: string[] | null;
+  open_to_chat?: boolean;
+  open_to_chat_until?: string | null;
 };
 
 export default function Directory({
@@ -59,6 +62,11 @@ export default function Directory({
     if (!now || !p.last_active_at) return false;
     const minutes = (now - new Date(p.last_active_at).getTime()) / (1000 * 60);
     return minutes < 10;
+  };
+
+  const isOpenToChatNow = (p: Profile) => {
+    if (!now || !p.open_to_chat || !p.open_to_chat_until) return false;
+    return new Date(p.open_to_chat_until).getTime() > now;
   };
 
   const me = profiles.find((p) => p.user_id === currentUserId);
@@ -111,7 +119,7 @@ export default function Directory({
           pinned
             ? "border-2 border-black bg-neutral-50 shadow-sm"
             : "border border-neutral-200 bg-white"
-        }`}
+        } ${isOpenToChatNow(p) ? "ring-2 ring-emerald-400" : ""}`}
       >
         <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false} className="relative w-12 h-12 shrink-0">
           {p.photo_url ? (
@@ -157,6 +165,13 @@ export default function Directory({
                 <span key={t} className="text-xs bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full">
                   {t}
                 </span>
+              ))}
+            </div>
+          )}
+          {p.coordination_tags && p.coordination_tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-1">
+              {p.coordination_tags.map((t) => (
+                <span key={t} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{t}</span>
               ))}
             </div>
           )}

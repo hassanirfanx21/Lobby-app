@@ -14,6 +14,7 @@
     "@whop/embedded-components-vanilla-js": "^1.0.0",
     "@whop/react": "^0.3.2",
     "@whop/sdk": "^0.0.40",
+    "bad-words": "^4.0.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4"

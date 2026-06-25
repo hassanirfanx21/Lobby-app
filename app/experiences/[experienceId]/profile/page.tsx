@@ -37,6 +37,7 @@ export default async function ProfilePage({
           initialAllowMessages={existing?.allow_messages ?? true}
           initialBuddyOptIn={existing?.buddy_opt_in ?? false}
           initialStatusLine={existing?.status_line ?? ""}
+          initialCoordinationTags={existing?.coordination_tags ?? []}
         />
       </div>
     </div>

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { runBuddyMatching } from "./buddy-actions";
 
 export default function BuddyMatchButton({ experienceId }: { experienceId: string }) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   function handleClick() {
     setMessage(null);
@@ -15,6 +17,7 @@ export default function BuddyMatchButton({ experienceId }: { experienceId: strin
         setMessage(
           `Matched ${result.matched} people!${result.leftOver ? " (1 person left over this week)" : ""}`
         );
+        router.refresh();
       } catch (err: any) {
         setMessage(err.message ?? "Something went wrong.");
       }

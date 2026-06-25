@@ -138,7 +138,7 @@ export default function Directory({
               )}
             </div>
             <div className="flex-1">
-              <p className="font-medium text-neutral-900">
+              <Link href={`/experiences/${experienceId}/u/${p.user_id}`} className="font-medium text-neutral-900 hover:underline">
                 {p.name}
                 {isNew(p) && (
                   <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-green-700 bg-green-100 rounded">
@@ -155,7 +155,12 @@ export default function Directory({
                     VERIFIED
                   </span>
                 )}
-              </p>
+                {p.user_id === currentUserId && (
+                  <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-neutral-500 bg-neutral-100 rounded">
+                    YOU
+                  </span>
+                )}
+              </Link>
               {p.status_line && <p className="text-xs text-neutral-400">{p.status_line}</p>}
               <p className="text-sm text-neutral-500 line-clamp-2">{p.bio}</p>
               {p.tags && p.tags.length > 0 && (

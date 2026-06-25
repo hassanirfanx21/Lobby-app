@@ -23,9 +23,11 @@ export default async function ProfileDetailPage({
   if (!profile) return <div className="p-6">Profile not found</div>;
 
   if (viewerUserId !== viewedUserId) {
+    const viewerUser = await whopsdk.users.retrieve(viewerUserId);
     await supabase.from("profile_views").insert({
       experience_id: experienceId,
       viewer_user_id: viewerUserId,
+      viewer_name: viewerUser.name ?? viewerUser.username,
       viewed_user_id: viewedUserId,
     });
   }

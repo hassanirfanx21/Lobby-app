@@ -7,8 +7,9 @@ import { getWeekLabel } from "@/lib/week";
 import BuddyMatchButton from "./BuddyMatchButton";
 import BuddyReveal from "./BuddyReveal";
 import DigestButton from "./DigestButton";
-import WelcomeModal from "./WelcomeModal";
+import WelcomeAndTutorial from "./WelcomeAndTutorial";
 import WaveBanner from "./WaveBanner";
+import ProfileViewBanner from "./ProfileViewBanner";
 
 export default async function ExperiencePage({
   params,
@@ -36,51 +37,72 @@ export default async function ExperiencePage({
     .eq("user_id", userId)
     .maybeSingle();
 
+  // Keep name/photo fresh from Whop, and mark activity, in one combined update
   if (myProfile) {
+    const liveUser = await whopsdk.users.retrieve(userId);
+    const liveName = liveUser.name ?? liveUser.username;
+    const livePhoto = liveUser.profile_picture?.url ?? null;
+
     await supabase
       .from("profiles")
-      .update({ last_active_at: new Date().toISOString() })
+      .update({
+        name: liveName,
+        photo_url: livePhoto,
+        username: liveUser.username,
+        last_active_at: new Date().toISOString(),
+      })
       .eq("id", myProfile.id);
+
+    myProfile.name = liveName;
+    myProfile.photo_url = livePhoto;
   }
 
-  const { data: profiles, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("experience_id", experienceId)
-    .order("created_at", { ascending: false });
-
-  const { data: incomingWaves } = await supabase
-    .from("waves")
-    .select("from_user_id, from_name, from_username, created_at")
-    .eq("experience_id", experienceId)
-    .eq("to_user_id", userId)
-    .eq("seen", false)
-    .gte("created_at", new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString())
-    .order("created_at", { ascending: false });
-
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const viewsCutoff =
+    myProfile?.views_dismissed_at && myProfile.views_dismissed_at > weekAgo
+      ? myProfile.views_dismissed_at
+      : weekAgo;
   const weekLabel = getWeekLabel();
-  const { data: myMatch } = await supabase
-    .from("buddy_matches")
-    .select("*")
-    .eq("experience_id", experienceId)
-    .eq("week_label", weekLabel)
-    .or(`user_id_1.eq.${userId},user_id_2.eq.${userId}`)
-    .maybeSingle();
+
+  const [
+    { data: profiles, error },
+    { data: incomingWaves },
+    { data: profileViews },
+    { data: myMatch },
+  ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("*")
+      .eq("experience_id", experienceId)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("waves")
+      .select("from_user_id, from_name, from_username, created_at")
+      .eq("experience_id", experienceId)
+      .eq("to_user_id", userId)
+      .eq("seen", false)
+      .gte("created_at", new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString())
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("profile_views")
+      .select("viewer_user_id, viewer_name, created_at")
+      .eq("experience_id", experienceId)
+      .eq("viewed_user_id", userId)
+      .gte("created_at", viewsCutoff),
+    supabase
+      .from("buddy_matches")
+      .select("*")
+      .eq("experience_id", experienceId)
+      .eq("week_label", weekLabel)
+      .or(`user_id_1.eq.${userId},user_id_2.eq.${userId}`)
+      .maybeSingle(),
+  ]);
 
   const buddyName = myMatch
     ? myMatch.user_id_1 === userId
       ? myMatch.name_2
       : myMatch.name_1
     : null;
-
-  const { data: viewsThisWeek } = await supabase
-    .from("profile_views")
-    .select("viewer_user_id")
-    .eq("experience_id", experienceId)
-    .eq("viewed_user_id", userId)
-    .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
-
-  const uniqueViewerCount = new Set((viewsThisWeek ?? []).map((v) => v.viewer_user_id)).size;
 
   return (
     <div className="min-h-screen bg-neutral-50 p-6">
@@ -95,7 +117,7 @@ export default async function ExperiencePage({
           </Link>
         </header>
 
-        <WelcomeModal experienceId={experienceId} hasProfile={!!myProfile} />
+        <WelcomeAndTutorial experienceId={experienceId} hasProfile={!!myProfile} />
 
         {access.access_level === "admin" && (
           <BuddyMatchButton experienceId={experienceId} />
@@ -105,11 +127,7 @@ export default async function ExperiencePage({
 
         {buddyName && <BuddyReveal buddyName={buddyName} />}
 
-        {uniqueViewerCount > 0 && (
-          <div className="mb-6 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
-            👀 {uniqueViewerCount} {uniqueViewerCount === 1 ? "person" : "people"} checked out your profile this week.
-          </div>
-        )}
+        <ProfileViewBanner views={profileViews ?? []} experienceId={experienceId} />
 
         {incomingWaves && incomingWaves.length > 0 && (
           <WaveBanner waves={incomingWaves ?? []} experienceId={experienceId} />

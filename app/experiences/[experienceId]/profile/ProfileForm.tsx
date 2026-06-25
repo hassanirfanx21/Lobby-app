@@ -43,6 +43,7 @@ export default function ProfileForm({
   initialAllowMessages,
   initialBuddyOptIn = false,
   initialStatusLine,
+  initialCoordinationTags,
 }: {
   experienceId: string;
   name: string;

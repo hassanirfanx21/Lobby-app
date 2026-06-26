@@ -57,8 +57,21 @@ export default function ThemeListener() {
       }
     };
 
+    // 3. Listen to color-scheme media query changes.
+    // Whop often changes the CSS color-scheme of the iframe element dynamically,
+    // which triggers this media query inside the iframe without a page reload.
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleMediaChange = (e: MediaQueryListEvent) => {
+      applyTheme(e.matches ? "dark" : "light");
+    };
+
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+    mediaQuery.addEventListener("change", handleMediaChange);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+      mediaQuery.removeEventListener("change", handleMediaChange);
+    };
   }, [urlTheme]);
 
   return null;

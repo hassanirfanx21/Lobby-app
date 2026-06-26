@@ -15,11 +15,15 @@ export default function BoostButton({ experienceId }: { experienceId: string }) 
     startTransition(async () => {
       try {
         const result = await requestBoost(experienceId, reason);
+        if (result.error) {
+          setError(result.error);
+          return;
+        }
         setDone(result.activatedNow ? "You're boosted now! 🚀" : "Queued — you'll go live once the current boost ends.");
         setReason("");
         setTimeout(() => { setOpen(false); setDone(null); }, 2000);
       } catch (err: any) {
-        setError(err.message ?? "Couldn't boost right now.");
+        setError("Couldn't boost right now.");
       }
     });
   }

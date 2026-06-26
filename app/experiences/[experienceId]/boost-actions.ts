@@ -49,9 +49,9 @@ export async function requestBoost(experienceId: string, reason: string) {
   if (!access.has_access) throw new Error("Access denied");
 
   const cleanReason = reason.trim().slice(0, 100);
-  if (!cleanReason) throw new Error("Tell the group why you're boosting.");
+  if (!cleanReason) return { error: "Tell the group why you're boosting." };
   if (containsBannedWords(cleanReason)) {
-    throw new Error("That message isn't appropriate for the community. Please rephrase.");
+    return { error: "That message isn't appropriate for the community. Please rephrase." };
   }
 
   const { data: recentBoost } = await supabase
@@ -63,7 +63,7 @@ export async function requestBoost(experienceId: string, reason: string) {
     .limit(1);
 
   if (recentBoost && recentBoost.length > 0) {
-    throw new Error("You can only boost once every 7 days.");
+    return { error: "You can only boost once every 7 days." };
   }
 
   const whopUser = await whopsdk.users.retrieve(userId);
@@ -89,7 +89,7 @@ export async function requestBoost(experienceId: string, reason: string) {
     started_at: isSlotFree ? now.toISOString() : null,
     ends_at: isSlotFree ? new Date(now.getTime() + BOOST_DURATION_MS).toISOString() : null,
   });
-  if (error) throw new Error(error.message);
+  if (error) return { error: error.message };
 
   revalidatePath(`/experiences/${experienceId}`);
   return { activatedNow: isSlotFree };

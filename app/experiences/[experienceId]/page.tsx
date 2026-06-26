@@ -13,6 +13,7 @@ import ProfileViewBanner from "./ProfileViewBanner";
 import { getCurrentBoost } from "./boost-actions";
 import BoostButton from "./BoostButton";
 import OpenToChatToggle from "./OpenToChatToggle";
+import BoostSpotlight from "./BoostSpotlight";
 
 export default async function ExperiencePage({
   params,
@@ -133,9 +134,7 @@ export default async function ExperiencePage({
         )}
 
         {currentBoost && (
-          <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-            🚀 <strong>{currentBoost.name}</strong> is boosted: "{currentBoost.reason}"
-          </div>
+          <BoostSpotlight experienceId={experienceId} boost={currentBoost} isAdmin={access.access_level === "admin"} />
         )}
 
         {access.access_level === "admin" && (

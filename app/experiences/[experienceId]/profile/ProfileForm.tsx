@@ -133,7 +133,11 @@ export default function ProfileForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm"
+      className="rounded-[20px] border p-6 card-shadow"
+      style={{
+        background: "var(--surface-raised)",
+        borderColor: "var(--border-subtle)",
+      }}
     >
       <div className="flex items-center gap-3 mb-6">
         {photoUrl ? (
@@ -143,27 +147,34 @@ export default function ProfileForm({
             className="w-14 h-14 rounded-full object-cover"
           />
         ) : (
-          <div className="w-14 h-14 rounded-full bg-neutral-200" />
+          <div className="w-14 h-14 rounded-full" style={{ background: "var(--border-subtle)" }} />
         )}
         <div>
-          <p className="font-semibold text-neutral-900">{name}</p>
-          <p className="text-xs text-neutral-400">
+          <p className="font-semibold" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>{name}</p>
+          <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
             Pulled automatically from Whop
           </p>
         </div>
       </div>
 
-      <label className="block text-sm font-medium text-neutral-700 mb-1">Status (optional)</label>
+      <label className="block text-sm font-medium mb-1" style={{ color: "var(--text-primary)" }}>Status (optional)</label>
       <input
         type="text"
         value={statusLine}
         onChange={(e) => setStatusLine(e.target.value)}
         maxLength={50}
         placeholder="What are you up to right now?"
-        className="w-full rounded-lg border border-neutral-300 p-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full rounded-xl p-2.5 text-sm mb-4 outline-none transition border"
+        style={{
+          background: "var(--surface-base)",
+          borderColor: "var(--border-subtle)",
+          color: "var(--text-primary)",
+        }}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border-subtle)")}
       />
 
-      <label className="block text-sm font-medium text-neutral-700 mb-1">
+      <label className="block text-sm font-medium mb-1" style={{ color: "var(--text-primary)" }}>
         Bio
       </label>
       <div className="flex flex-wrap gap-2 mb-2">
@@ -172,7 +183,8 @@ export default function ProfileForm({
             type="button"
             key={prompt}
             onClick={() => insertPrompt(prompt)}
-            className="text-xs px-2.5 py-1 rounded-full border border-dashed border-neutral-300 text-neutral-500 hover:border-neutral-400"
+            className="text-xs px-2.5 py-1 rounded-full border border-dashed hover:opacity-80 transition"
+            style={{ borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }}
           >
             {prompt}
           </button>
@@ -185,14 +197,21 @@ export default function ProfileForm({
         maxLength={280}
         rows={3}
         placeholder="Tell the community a bit about you..."
-        className="w-full rounded-lg border border-neutral-300 p-3 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full rounded-xl p-3 text-sm mb-1 outline-none transition border"
+        style={{
+          background: "var(--surface-base)",
+          borderColor: "var(--border-subtle)",
+          color: "var(--text-primary)",
+        }}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border-subtle)")}
       />
-      <p className="text-xs text-neutral-400 text-right mb-4">
+      <p className="text-xs text-right mb-4" style={{ color: "var(--text-secondary)" }}>
         {bio.length}/280
       </p>
 
-      <label className="block text-sm font-medium text-neutral-700 mb-2">
-        Tags <span className="text-neutral-400">(pick up to 5)</span>
+      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text-primary)" }}>
+        Tags <span style={{ color: "var(--text-secondary)" }}>(pick up to 5)</span>
       </label>
       <div className="flex flex-wrap gap-2 mb-6">
         {AVAILABLE_TAGS.map((tag) => {
@@ -202,11 +221,12 @@ export default function ProfileForm({
               type="button"
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`text-sm px-3 py-1.5 rounded-full border transition ${
+              className="text-sm px-3 py-1.5 rounded-full border transition hover:opacity-80"
+              style={
                 active
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-neutral-600 border-neutral-300 hover:border-neutral-400"
-              }`}
+                  ? { background: "var(--text-primary)", borderColor: "var(--text-primary)", color: "var(--surface-base)" }
+                  : { background: "var(--surface-base)", borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }
+              }
             >
               {tag}
             </button>
@@ -214,8 +234,8 @@ export default function ProfileForm({
         })}
       </div>
 
-      <label className="block text-sm font-medium text-neutral-700 mb-2">
-        Current Goals <span className="text-neutral-400">(pick up to 2)</span>
+      <label className="block text-sm font-medium mb-2" style={{ color: "var(--text-primary)" }}>
+        Current Goals <span style={{ color: "var(--text-secondary)" }}>(pick up to 2)</span>
       </label>
       <div className="flex flex-wrap gap-2 mb-6">
         {COORDINATION_OPTIONS.map((tag) => {
@@ -225,11 +245,12 @@ export default function ProfileForm({
               type="button"
               key={tag}
               onClick={() => toggleCoordinationTag(tag)}
-              className={`text-sm px-3 py-1.5 rounded-full border transition ${
+              className="text-sm px-3 py-1.5 rounded-full border transition hover:opacity-80"
+              style={
                 active
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-blue-50 text-blue-700 border-blue-200 hover:border-blue-300"
-              }`}
+                  ? { background: "var(--status-open)", borderColor: "var(--status-open)", color: "#fff" }
+                  : { background: "var(--surface-base)", borderColor: "var(--status-open)", color: "var(--status-open)" }
+              }
             >
               {tag}
             </button>
@@ -237,7 +258,7 @@ export default function ProfileForm({
         })}
       </div>
 
-      <label className="flex items-center gap-2 mb-6 text-sm text-neutral-700">
+      <label className="flex items-center gap-2 mb-6 text-sm" style={{ color: "var(--text-primary)" }}>
         <input
           type="checkbox"
           checked={allowMessages}
@@ -247,7 +268,7 @@ export default function ProfileForm({
         Allow other members to message me from Lobby
       </label>
 
-      <label className="flex items-center gap-2 mb-6 text-sm text-neutral-700">
+      <label className="flex items-center gap-2 mb-6 text-sm" style={{ color: "var(--text-primary)" }}>
         <input
           type="checkbox"
           checked={buddyOptIn}
@@ -257,9 +278,9 @@ export default function ProfileForm({
         Opt into weekly Buddy Matching (get randomly paired with someone new)
       </label>
 
-      {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
+      {error && <p className="text-sm mb-4" style={{ color: "var(--accent)" }}>{error}</p>}
       {saved && (
-        <p className="text-sm text-green-600 mb-4">
+        <p className="text-sm mb-4" style={{ color: "var(--status-active)" }}>
           Saved! Taking you to the directory...
         </p>
       )}
@@ -267,7 +288,8 @@ export default function ProfileForm({
       <button
         type="submit"
         disabled={isPending}
-        className="w-full rounded-lg bg-black text-white py-2.5 text-sm font-medium hover:bg-neutral-800 transition disabled:opacity-50"
+        className="w-full rounded-xl py-2.5 text-sm font-medium transition hover:opacity-80 disabled:opacity-50"
+        style={{ background: "var(--accent)", color: "#fff" }}
       >
         {isPending ? "Saving..." : "Save profile"}
       </button>

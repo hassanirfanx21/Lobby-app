@@ -1,26 +1,130 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ─── Font tokens ─────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-jakarta);
 }
 
+/* ─── Light mode semantic tokens ─────────────────────── */
+:root {
+  --surface-base:    #FAFAF8;
+  --surface-raised:  #FFFFFF;
+  --text-primary:    #1A1A1A;
+  --text-secondary:  #6B6B6B;
+  --border-subtle:   #ECECE9;
+
+  /* Whop Vermilion — exact brand orange */
+  --accent:          #F04C23;
+  --accent-soft:     #FEF0EC;
+  --accent-deep:     #D93B14;
+
+  /* Status rings */
+  --status-active:   #22C55E;
+  --status-open:     #0EA5E9;
+  --status-boosted:  #F04C23;
+
+  /* Legacy aliases kept so existing Tailwind bg-white / bg-neutral-* still work */
+  --background: var(--surface-base);
+  --foreground: var(--text-primary);
+}
+
+/* ─── Dark mode tokens ────────────────────────────────── */
+/* WhopThemeScript adds .dark to <html>                   */
+.dark, [data-theme="dark"] {
+  --surface-base:    #16140F;
+  --surface-raised:  #1F1C16;
+  --text-primary:    #F2EFE9;
+  --text-secondary:  #A39C8E;
+  --border-subtle:   #2C2820;
+
+  --accent:          #FF6740;   /* brighter on dark backgrounds */
+  --accent-soft:     #2A1A12;
+  --accent-deep:     #FF4D22;
+
+  --status-active:   #34D399;
+  --status-open:     #38BDF8;
+  --status-boosted:  #FF6740;
+
+  --background: var(--surface-base);
+  --foreground: var(--text-primary);
+}
+
+/* Fallback for when WhopThemeScript hasn't fired yet */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.dark):not([data-theme]) {
+    --surface-base:    #16140F;
+    --surface-raised:  #1F1C16;
+    --text-primary:    #F2EFE9;
+    --text-secondary:  #A39C8E;
+    --border-subtle:   #2C2820;
+    --accent:          #FF6740;
+    --accent-soft:     #2A1A12;
+    --accent-deep:     #FF4D22;
+    --status-active:   #34D399;
+    --status-open:     #38BDF8;
+    --status-boosted:  #FF6740;
+    --background: var(--surface-base);
+    --foreground: var(--text-primary);
   }
 }
 
+/* ─── Base styles ─────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  transition: background 0.15s ease, color 0.15s ease;
 }
+
+/* ─── Motion safety ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Card entrance animation ─────────────────────────── */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.lobby-card {
+  animation: card-in 0.25s ease both;
+}
+
+/* Stagger via nth-child (up to 12 cards, then stops) */
+.lobby-card:nth-child(1)  { animation-delay: 0.03s; }
+.lobby-card:nth-child(2)  { animation-delay: 0.06s; }
+.lobby-card:nth-child(3)  { animation-delay: 0.09s; }
+.lobby-card:nth-child(4)  { animation-delay: 0.12s; }
+.lobby-card:nth-child(5)  { animation-delay: 0.15s; }
+.lobby-card:nth-child(6)  { animation-delay: 0.18s; }
+.lobby-card:nth-child(7)  { animation-delay: 0.21s; }
+.lobby-card:nth-child(8)  { animation-delay: 0.24s; }
+.lobby-card:nth-child(9)  { animation-delay: 0.27s; }
+.lobby-card:nth-child(10) { animation-delay: 0.30s; }
+.lobby-card:nth-child(11) { animation-delay: 0.33s; }
+.lobby-card:nth-child(12) { animation-delay: 0.36s; }
+
+/* ─── Avatar ring system ──────────────────────────────── */
+.avatar-ring {
+  border-radius: 9999px;
+  padding: 2px;
+  display: inline-block;
+}
+.avatar-ring--active   { box-shadow: 0 0 0 2px var(--status-active); }
+.avatar-ring--open     { box-shadow: 0 0 0 2px var(--status-open); }
+.avatar-ring--boosted  { box-shadow: 0 0 0 2px var(--status-boosted); }
+
+/* ─── Card shadow (drops in light, none in dark) ──────── */
+.card-shadow {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+.dark .card-shadow, [data-theme="dark"] .card-shadow {
+  box-shadow: none;
+}
+

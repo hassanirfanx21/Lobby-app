@@ -9,7 +9,12 @@ export default function BuddyReveal({ buddyName }: { buddyName: string }) {
     return (
       <button
         onClick={() => setRevealed(true)}
-        className="mb-6 inline-flex items-center gap-2 text-xs font-medium bg-purple-50 border border-purple-200 text-purple-900 px-3 py-1.5 rounded-full hover:bg-purple-100 transition"
+        className="mb-4 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border transition hover:opacity-80"
+        style={{
+          background: "var(--accent-soft)",
+          borderColor: "var(--accent)",
+          color: "var(--accent)",
+        }}
       >
         🤝 You have a buddy this week — Reveal
       </button>
@@ -17,13 +22,22 @@ export default function BuddyReveal({ buddyName }: { buddyName: string }) {
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-purple-200 bg-purple-50 p-4 text-sm text-purple-900 flex items-center justify-between">
+    <div
+      className="mb-4 rounded-xl p-4 text-sm flex items-center justify-between border"
+      style={{
+        background: "var(--accent-soft)",
+        borderColor: "var(--border-subtle)",
+        color: "var(--text-primary)",
+      }}
+    >
       <span>
-        🤝 Your buddy this week is <strong>{buddyName}</strong>! Say hi.
+        🤝 Your buddy this week is{" "}
+        <strong style={{ fontFamily: "var(--font-jakarta)" }}>{buddyName}</strong>! Say hi.
       </span>
       <button
         onClick={() => setRevealed(false)}
-        className="text-xs underline ml-3 whitespace-nowrap"
+        className="text-xs ml-3 whitespace-nowrap opacity-50 hover:opacity-100 transition"
+        style={{ color: "var(--text-secondary)" }}
       >
         Hide
       </button>

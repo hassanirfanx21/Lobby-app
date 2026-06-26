@@ -29,11 +29,13 @@ export default function Directory({
   currentUserId,
   experienceId,
   isAdmin,
+  boostedUserId,
 }: {
   profiles: Profile[];
   currentUserId: string;
   experienceId: string;
   isAdmin?: boolean;
+  boostedUserId?: string | null;
 }) {
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -69,6 +71,14 @@ export default function Directory({
     return new Date(p.open_to_chat_until).getTime() > now;
   };
 
+  // Avatar ring: boosted > open-to-chat > active (priority order)
+  const avatarRingClass = (p: Profile): string => {
+    if (boostedUserId && p.user_id === boostedUserId) return "avatar-ring avatar-ring--boosted";
+    if (isOpenToChatNow(p)) return "avatar-ring avatar-ring--open";
+    if (isActiveNow(p)) return "avatar-ring avatar-ring--active";
+    return "";
+  };
+
   const me = profiles.find((p) => p.user_id === currentUserId);
 
   const sharedTags = (p: Profile) => {
@@ -101,6 +111,7 @@ export default function Directory({
     });
   }
 
+  // Others grid — exclude current user (they're in the Front Desk now)
   const others = profiles.filter((p) => p.user_id !== currentUserId);
   const filteredOthers = others.filter((p) => {
     const q = query.toLowerCase().trim();
@@ -111,100 +122,144 @@ export default function Directory({
     );
   });
 
-  function renderCard(p: Profile, pinned: boolean) {
+  function renderCard(p: Profile) {
+    const ringClass = avatarRingClass(p);
+
     return (
       <div
         key={p.id}
-        className={`rounded-xl p-4 flex gap-3 ${
-          pinned
-            ? "border-2 border-black bg-neutral-50 shadow-sm"
-            : "border border-neutral-200 bg-white"
-        } ${isOpenToChatNow(p) ? "ring-2 ring-emerald-400" : ""}`}
+        className="lobby-card card-shadow group rounded-[20px] p-4 flex gap-3 border transition-transform duration-200 hover:-translate-y-0.5"
+        style={{
+          background: "var(--surface-raised)",
+          borderColor: "var(--border-subtle)",
+        }}
       >
-        <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false} className="relative w-12 h-12 shrink-0">
+        {/* Avatar with ring */}
+        <Link
+          href={`/experiences/${experienceId}/u/${p.user_id}`}
+          prefetch={false}
+          className={`shrink-0 w-12 h-12 ${ringClass}`}
+        >
           {p.photo_url ? (
-            <img src={p.photo_url} alt={p.name} className="w-12 h-12 rounded-full object-cover" />
+            <img
+              src={p.photo_url}
+              alt={p.name}
+              className="w-12 h-12 rounded-full object-cover"
+            />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-neutral-200" />
-          )}
-          {isActiveNow(p) && (
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+            <div
+              className="w-12 h-12 rounded-full"
+              style={{ background: "var(--border-subtle)" }}
+            />
           )}
         </Link>
-        <div className="flex-1">
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
           <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false}>
-            <p className="font-medium text-neutral-900">
+            <p className="font-semibold leading-snug" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
               {p.name}
-              {p.user_id === currentUserId && (
-                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-neutral-500 bg-neutral-100 rounded">
-                  YOU
-                </span>
-              )}
+              {/* History badges — flat pills next to name */}
               {isNew(p) && (
-                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-green-700 bg-green-100 rounded">
+                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
+                  style={{ background: "var(--status-active)", color: "#fff", opacity: 0.9 }}>
                   NEW
                 </span>
               )}
               {ogIds.includes(p.id) && (
-                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-purple-700 bg-purple-100 rounded">
+                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
+                  style={{ background: "var(--accent-soft)", color: "var(--accent)", border: "1px solid var(--accent)" }}>
                   OG
                 </span>
               )}
               {p.is_verified && (
-                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-blue-700 bg-blue-100 rounded">
-                  VERIFIED
+                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
+                  style={{ background: "var(--status-open)", color: "#fff", opacity: 0.9 }}>
+                  ✓
                 </span>
               )}
             </p>
           </Link>
-          {p.status_line && <p className="text-xs text-neutral-400">{p.status_line}</p>}
-          <p className="text-sm text-neutral-500 line-clamp-2">{p.bio}</p>
+
+          {p.status_line && (
+            <p className="text-xs mt-0.5 truncate" style={{ color: "var(--text-secondary)" }}>
+              {p.status_line}
+            </p>
+          )}
+          <p className="text-sm mt-1 line-clamp-2" style={{ color: "var(--text-secondary)" }}>
+            {p.bio}
+          </p>
+
+          {/* Interest tags */}
           {p.tags && p.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
               {p.tags.map((t) => (
-                <span key={t} className="text-xs bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full">
+                <span
+                  key={t}
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ background: "var(--surface-base)", color: "var(--text-secondary)", border: "1px solid var(--border-subtle)" }}
+                >
                   {t}
                 </span>
               ))}
             </div>
           )}
+
+          {/* Coordination tags */}
           {p.coordination_tags && p.coordination_tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-1">
               {p.coordination_tags.map((t) => (
-                <span key={t} className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{t}</span>
+                <span
+                  key={t}
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ background: "var(--status-open)", color: "#fff", opacity: 0.85 }}
+                >
+                  {t}
+                </span>
               ))}
             </div>
           )}
+
+          {/* Shared interests callout */}
           {sharedTags(p).length > 0 && (
-            <p className="text-xs text-emerald-600 mt-1">You both like {sharedTags(p).join(", ")}</p>
+            <p className="text-xs mt-1" style={{ color: "var(--status-active)" }}>
+              You both like {sharedTags(p).join(", ")}
+            </p>
           )}
+
+          {/* Action row */}
           <div className="flex flex-wrap gap-2 mt-3 items-center">
-            {p.user_id !== currentUserId && p.allow_messages && p.username && (
+            {p.allow_messages && p.username && (
               <a
                 href={`https://whop.com/@${p.username}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-xs font-medium bg-black text-white px-3 py-1.5 rounded-full hover:bg-neutral-800 transition"
+                className="inline-block text-xs font-medium px-3 py-1.5 rounded-full transition hover:opacity-80"
+                style={{ background: "var(--accent)", color: "#fff" }}
               >
                 Message
               </a>
             )}
-            {p.user_id !== currentUserId && (
-              <button
-                onClick={() => handleWave(p.user_id)}
-                disabled={isPending || wavedIds.has(p.user_id)}
-                className="text-xs font-medium border border-neutral-300 px-3 py-1.5 rounded-full hover:border-neutral-400 transition disabled:opacity-50"
-              >
-                {wavedIds.has(p.user_id) ? "👋 Waved!" : "👋 Wave"}
-              </button>
-            )}
+            <button
+              onClick={() => handleWave(p.user_id)}
+              disabled={isPending || wavedIds.has(p.user_id)}
+              className="text-xs font-medium px-3 py-1.5 rounded-full border transition disabled:opacity-50 hover:opacity-80"
+              style={{
+                borderColor: "var(--border-subtle)",
+                color: "var(--text-secondary)",
+                background: "var(--surface-base)",
+              }}
+            >
+              {wavedIds.has(p.user_id) ? "👋 Waved!" : "👋 Wave"}
+            </button>
             {isAdmin && (
               <button
                 onClick={() => handleVerify(p.id, !!p.is_verified)}
                 disabled={isPending}
-                className="text-xs font-medium border border-neutral-300 px-3 py-1.5 rounded-full hover:border-neutral-400 transition disabled:opacity-50"
+                className="text-xs font-medium px-3 py-1.5 rounded-full border transition disabled:opacity-50 hover:opacity-80"
+                style={{ borderColor: "var(--border-subtle)", color: "var(--text-secondary)", background: "var(--surface-base)" }}
               >
-                {p.is_verified ? "Unverify" : "Mark Verified"}
+                {p.is_verified ? "Unverify" : "Verify"}
               </button>
             )}
           </div>
@@ -215,28 +270,40 @@ export default function Directory({
 
   return (
     <div>
+      {/* Search */}
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search by name or tag..."
-        className="w-full rounded-lg border border-neutral-300 p-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-black"
+        placeholder="Search by name or tag…"
+        className="w-full rounded-xl p-3 text-sm mb-5 outline-none transition"
+        style={{
+          background: "var(--surface-raised)",
+          border: "1px solid var(--border-subtle)",
+          color: "var(--text-primary)",
+        }}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border-subtle)")}
       />
 
-      {me && <div className="mb-6">{renderCard(me, true)}</div>}
-
+      {/* Empty state */}
       {filteredOthers.length === 0 && (
-        <div className="text-center text-neutral-400 py-16">
+        <div className="text-center py-16" style={{ color: "var(--text-secondary)" }}>
           {query ? `No matches for "${query}"` : "No one else here yet."}
         </div>
       )}
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        {filteredOthers.map((p) => renderCard(p, false))}
+      {/* 4-col grid: 1 mobile → 2 tablet → 4 desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {filteredOthers.map((p) => renderCard(p))}
       </div>
 
+      {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-black text-white text-sm px-4 py-2 rounded-full shadow-lg z-50">
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 text-sm px-4 py-2 rounded-full shadow-lg z-50"
+          style={{ background: "var(--accent)", color: "#fff" }}
+        >
           {toast}
         </div>
       )}

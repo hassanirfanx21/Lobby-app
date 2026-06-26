@@ -15,7 +15,8 @@ export default function WelcomeAndTutorial({
       <WelcomeModal experienceId={experienceId} hasProfile={hasProfile} forceOpen={forceOpen} onClose={() => setForceOpen(false)} />
       <button
         onClick={() => setForceOpen(true)}
-        className="fixed bottom-4 right-4 w-9 h-9 rounded-full bg-neutral-900 text-white text-sm shadow-lg z-40 hover:bg-neutral-700 transition"
+        className="fixed bottom-4 right-4 w-9 h-9 rounded-full text-sm shadow-lg z-40 transition hover:opacity-80 font-bold"
+        style={{ background: "var(--text-primary)", color: "var(--surface-base)" }}
         title="How Lobby works"
       >
         ?

@@ -26,7 +26,7 @@ export default async function ProfilePage({
     .maybeSingle();
 
   return (
-    <div className="min-h-screen bg-neutral-50 p-6">
+    <div className="min-h-screen p-6" style={{ background: "var(--surface-base)" }}>
       <div className="max-w-md mx-auto">
         <ProfileForm
           experienceId={experienceId}

@@ -22,10 +22,33 @@ export default function BoostSpotlight({
   }
 
   return (
-    <div className="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 flex items-center justify-between">
-      <span>🚀 <strong>{boost.name}</strong> is boosted: "{boost.reason}"</span>
+    <div
+      className="mb-5 rounded-xl px-4 py-2.5 flex items-center justify-between text-sm border"
+      style={{
+        background: "var(--accent-soft)",
+        borderColor: "var(--border-subtle)",
+        color: "var(--text-primary)",
+      }}
+    >
+      <span className="flex items-center gap-2 min-w-0">
+        <span
+          className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
+          style={{ background: "var(--accent)", color: "#fff" }}
+        >
+          LIVE
+        </span>
+        <span className="truncate">
+          <strong style={{ fontFamily: "var(--font-jakarta)" }}>{boost.name}</strong>
+          <span style={{ color: "var(--text-secondary)" }}> · {boost.reason}</span>
+        </span>
+      </span>
       {isAdmin && (
-        <button onClick={handleRemove} disabled={isPending} className="text-xs underline ml-3 whitespace-nowrap">
+        <button
+          onClick={handleRemove}
+          disabled={isPending}
+          className="text-xs ml-3 whitespace-nowrap opacity-50 hover:opacity-100 transition"
+          style={{ color: "var(--text-secondary)" }}
+        >
           Remove
         </button>
       )}

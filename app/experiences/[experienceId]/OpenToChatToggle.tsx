@@ -3,7 +3,13 @@
 import { useState, useTransition } from "react";
 import { setOpenToChat } from "./chat-status-actions";
 
-export default function OpenToChatToggle({ experienceId, initialOpen }: { experienceId: string; initialOpen: boolean }) {
+export default function OpenToChatToggle({
+  experienceId,
+  initialOpen,
+}: {
+  experienceId: string;
+  initialOpen: boolean;
+}) {
   const [open, setOpen] = useState(initialOpen);
   const [isPending, startTransition] = useTransition();
 
@@ -17,11 +23,14 @@ export default function OpenToChatToggle({ experienceId, initialOpen }: { experi
     <button
       onClick={toggle}
       disabled={isPending}
-      className={`text-xs font-medium px-3 py-1.5 rounded-full border transition ${
-        open ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-neutral-600 border-neutral-300 hover:border-neutral-400"
-      }`}
+      className="text-xs font-medium px-3 py-1.5 rounded-full border transition hover:opacity-80 disabled:opacity-50"
+      style={
+        open
+          ? { background: "var(--status-open)", borderColor: "var(--status-open)", color: "#fff" }
+          : { background: "var(--surface-raised)", borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }
+      }
     >
-      {open ? "💬 Open to chat (1hr) — tap to end" : "💬 I'm open to chat right now"}
+      {open ? "💬 Open to chat · tap to end" : "💬 Open to chat"}
     </button>
   );
 }

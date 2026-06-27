@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 type WeeklyPoint = {
   weekStart: string;
   label: string;
@@ -28,12 +30,14 @@ function Bar({
   color,
   label,
   sublabel,
+  isLoaded,
 }: {
   value: number;
   max: number;
   color: string;
   label: string;
   sublabel?: string;
+  isLoaded?: boolean;
 }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0;
   return (
@@ -48,8 +52,8 @@ function Bar({
       </div>
       <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "var(--surface-sunken)" }}>
         <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, background: color }}
+          className="h-full rounded-full transition-all duration-1000 ease-out"
+          style={{ width: (isLoaded ?? true) ? `${pct}%` : "0%", background: color }}
         />
       </div>
     </div>
@@ -65,6 +69,14 @@ export default function InsightsCharts({
   stats: CompletionStats;
   topTags: TagPoint[];
 }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger animations right after mount
+    const timer = setTimeout(() => setIsLoaded(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   const maxProfiles = Math.max(...weeklyData.map((w) => w.newProfiles), 1);
   const maxWaves = Math.max(...weeklyData.map((w) => w.waves), 1);
   const maxTag = topTags.length > 0 ? topTags[0].count : 1;
@@ -92,9 +104,9 @@ export default function InsightsCharts({
               </span>
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "var(--surface-sunken)" }}>
                 <div
-                  className="h-full rounded-full transition-all duration-700"
+                  className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: `${maxProfiles > 0 ? Math.round((w.newProfiles / maxProfiles) * 100) : 0}%`,
+                    width: isLoaded ? `${maxProfiles > 0 ? Math.round((w.newProfiles / maxProfiles) * 100) : 0}%` : "0%",
                     background: "var(--status-active)",
                   }}
                 />
@@ -117,9 +129,9 @@ export default function InsightsCharts({
               </span>
               <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "var(--surface-sunken)" }}>
                 <div
-                  className="h-full rounded-full transition-all duration-700"
+                  className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: `${maxWaves > 0 ? Math.round((w.waves / maxWaves) * 100) : 0}%`,
+                    width: isLoaded ? `${maxWaves > 0 ? Math.round((w.waves / maxWaves) * 100) : 0}%` : "0%",
                     background: "var(--accent)",
                   }}
                 />
@@ -152,6 +164,7 @@ export default function InsightsCharts({
                 color="var(--status-open)"
                 label={tag.label}
                 sublabel={`${tag.count} member${tag.count !== 1 ? "s" : ""}`}
+                isLoaded={isLoaded}
               />
             ))}
           </div>
@@ -167,11 +180,11 @@ export default function InsightsCharts({
           Profile Depth
         </p>
         <div className="flex flex-col gap-3.5">
-          <Bar value={stats.withPhoto} max={stats.total} color="var(--status-active)" label="Has photo" sublabel={`${stats.total > 0 ? Math.round(stats.withPhoto / stats.total * 100) : 0}%`} />
-          <Bar value={stats.withBio} max={stats.total} color="var(--status-active)" label="Has bio" sublabel={`${stats.total > 0 ? Math.round(stats.withBio / stats.total * 100) : 0}%`} />
-          <Bar value={stats.withTags} max={stats.total} color="var(--status-active)" label="Has tags" sublabel={`${stats.total > 0 ? Math.round(stats.withTags / stats.total * 100) : 0}%`} />
-          <Bar value={stats.buddyOptIn} max={stats.total} color="var(--accent)" label="Buddy opt-in" sublabel={`${stats.total > 0 ? Math.round(stats.buddyOptIn / stats.total * 100) : 0}%`} />
-          <Bar value={stats.openToChat} max={stats.total} color="var(--status-open)" label="Open to chat" sublabel={`${stats.total > 0 ? Math.round(stats.openToChat / stats.total * 100) : 0}%`} />
+          <Bar value={stats.withPhoto} max={stats.total} color="var(--status-active)" label="Has photo" sublabel={`${stats.total > 0 ? Math.round(stats.withPhoto / stats.total * 100) : 0}%`} isLoaded={isLoaded} />
+          <Bar value={stats.withBio} max={stats.total} color="var(--status-active)" label="Has bio" sublabel={`${stats.total > 0 ? Math.round(stats.withBio / stats.total * 100) : 0}%`} isLoaded={isLoaded} />
+          <Bar value={stats.withTags} max={stats.total} color="var(--status-active)" label="Has tags" sublabel={`${stats.total > 0 ? Math.round(stats.withTags / stats.total * 100) : 0}%`} isLoaded={isLoaded} />
+          <Bar value={stats.buddyOptIn} max={stats.total} color="var(--accent)" label="Buddy opt-in" sublabel={`${stats.total > 0 ? Math.round(stats.buddyOptIn / stats.total * 100) : 0}%`} isLoaded={isLoaded} />
+          <Bar value={stats.openToChat} max={stats.total} color="var(--status-open)" label="Open to chat" sublabel={`${stats.total > 0 ? Math.round(stats.openToChat / stats.total * 100) : 0}%`} isLoaded={isLoaded} />
         </div>
       </div>
 
@@ -208,13 +221,13 @@ export default function InsightsCharts({
             </p>
             <div className="w-full h-3 rounded-full overflow-hidden flex">
               <div
-                className="h-full transition-all duration-700"
-                style={{ width: `${Math.round(stats.activeToday / stats.total * 100)}%`, background: "var(--status-active)" }}
+                className="h-full transition-all duration-1000 ease-out"
+                style={{ width: isLoaded ? `${Math.round(stats.activeToday / stats.total * 100)}%` : "0%", background: "var(--status-active)" }}
                 title={`Today: ${stats.activeToday}`}
               />
               <div
-                className="h-full transition-all duration-700"
-                style={{ width: `${Math.round((stats.activeThisWeek - stats.activeToday) / stats.total * 100)}%`, background: "var(--status-open)" }}
+                className="h-full transition-all duration-1000 ease-out delay-100"
+                style={{ width: isLoaded ? `${Math.round((stats.activeThisWeek - stats.activeToday) / stats.total * 100)}%` : "0%", background: "var(--status-open)" }}
                 title={`This week: ${stats.activeThisWeek - stats.activeToday}`}
               />
               <div

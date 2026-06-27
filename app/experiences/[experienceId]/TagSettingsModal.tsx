@@ -34,6 +34,7 @@ export default function TagSettingsModal({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [showRemoved, setShowRemoved] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<{ type: "remove" | "reset"; tag?: TagOption } | null>(null);
 
   const currentList = tab === "interest" ? interests : coordination;
   const setList = tab === "interest" ? setInterests : setCoordination;
@@ -47,8 +48,8 @@ export default function TagSettingsModal({
       try {
         const res = await fn();
         if (res && res.error) setError(res.error);
-      } catch (err: any) {
-        setError(err.message ?? "Something went wrong.");
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
       }
     });
   }
@@ -91,17 +92,7 @@ export default function TagSettingsModal({
   }
 
   function handleDeactivate(tag: TagOption) {
-    if (!confirm(`Remove "${tag.label}"? This will strip it from all users' profiles.`)) return;
-    
-    setList(prev => prev.map(t => t.id === tag.id ? { ...t, is_active: false } : t));
-    
-    wrapAction(async () => {
-      const res = await deactivateTagOption(experienceId, tag.id, tag.label, tab);
-      if (res?.error) {
-        setList(prev => prev.map(t => t.id === tag.id ? { ...t, is_active: true } : t));
-        return res;
-      }
-    });
+    setConfirmAction({ type: "remove", tag });
   }
 
   function handleReactivate(tag: TagOption) {
@@ -142,7 +133,28 @@ export default function TagSettingsModal({
   }
 
   function handleReset() {
-    if (!confirm("Are you sure? This will remove all custom tags and restore the default list.")) return;
+    setConfirmAction({ type: "reset" });
+  }
+
+  function confirmPendingAction() {
+    if (!confirmAction) return;
+
+    if (confirmAction.type === "remove" && confirmAction.tag) {
+      const tag = confirmAction.tag;
+      setConfirmAction(null);
+      setList(prev => prev.map(t => t.id === tag.id ? { ...t, is_active: false } : t));
+
+      wrapAction(async () => {
+        const res = await deactivateTagOption(experienceId, tag.id, tag.label, tab);
+        if (res?.error) {
+          setList(prev => prev.map(t => t.id === tag.id ? { ...t, is_active: true } : t));
+          return res;
+        }
+      });
+      return;
+    }
+
+    setConfirmAction(null);
     wrapAction(async () => {
       const res = await resetTagsToDefault(experienceId, tab);
       if (res?.error) return res;
@@ -156,6 +168,38 @@ export default function TagSettingsModal({
         className="w-full max-w-lg rounded-[24px] card-shadow flex flex-col max-h-[85vh] overflow-hidden"
         style={{ background: "var(--surface-raised)" }}
       >
+        {confirmAction && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-modal" style={{ background: "rgba(0,0,0,0.45)" }}>
+            <div className="w-full max-w-sm rounded-[24px] p-5 card-shadow" style={{ background: "var(--surface-raised)" }}>
+              <h3 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
+                {confirmAction.type === "reset" ? "Reset tags to defaults?" : `Remove "${confirmAction.tag?.label ?? "tag"}"?`}
+              </h3>
+              <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+                {confirmAction.type === "reset"
+                  ? "This will remove all custom tags and restore the default list."
+                  : "This will remove this tag from all users' profiles."}
+              </p>
+              <div className="mt-5 flex justify-end gap-2">
+                <button
+                  onClick={() => setConfirmAction(null)}
+                  disabled={isPending}
+                  className="rounded-[12px] px-3 py-2 text-sm font-medium transition-opacity disabled:opacity-40"
+                  style={{ background: "var(--surface-sunken)", color: "var(--text-primary)" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmPendingAction}
+                  disabled={isPending}
+                  className="rounded-[12px] px-3 py-2 text-sm font-semibold transition-opacity disabled:opacity-40"
+                  style={{ background: "var(--accent)", color: "#fff" }}
+                >
+                  {confirmAction.type === "reset" ? "Reset to defaults" : "Remove tag"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="p-6 border-b flex justify-between items-center" style={{ borderColor: "var(--border-subtle)" }}>
           <h2 className="text-xl font-bold" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
             Tag Settings

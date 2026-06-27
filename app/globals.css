@@ -11,13 +11,17 @@
 :root {
   --surface-base:    #FAFAF8;
   --surface-raised:  #FFFFFF;
+  --surface-sunken:  #F3F3F0;
+  --surface-glass:   rgba(255,255,255,0.7);
   --text-primary:    #1A1A1A;
-  --text-secondary:  #6B6B6B;
-  --border-subtle:   #ECECE9;
+  --text-secondary:  #71706B;
+  --text-tertiary:   #A3A19C;
+  --border-subtle:   #EAEAE6;
+  --border-strong:   #D4D4CF;
 
-  /* Whop Vermilion — exact brand orange */
+  /* Whop Vermilion — use sparingly: 1 CTA per screen */
   --accent:          #F04C23;
-  --accent-soft:     #FEF0EC;
+  --accent-soft:     #FEF4F1;
   --accent-deep:     #D93B14;
 
   /* Status rings */
@@ -25,46 +29,61 @@
   --status-open:     #0EA5E9;
   --status-boosted:  #F04C23;
 
-  /* Legacy aliases kept so existing Tailwind bg-white / bg-neutral-* still work */
+  /* Feedback */
+  --success:         #16A34A;
+  --error:           #DC2626;
+
   --background: var(--surface-base);
   --foreground: var(--text-primary);
 }
 
 /* ─── Dark mode tokens ────────────────────────────────── */
-/* WhopThemeScript adds .dark to <html>                   */
 .dark, [data-theme="dark"] {
-  --surface-base:    #16140F;
-  --surface-raised:  #1F1C16;
+  --surface-base:    #131210;
+  --surface-raised:  #1C1A16;
+  --surface-sunken:  #0E0D0B;
+  --surface-glass:   rgba(28,26,22,0.8);
   --text-primary:    #F2EFE9;
   --text-secondary:  #A39C8E;
-  --border-subtle:   #2C2820;
+  --text-tertiary:   #6B645A;
+  --border-subtle:   #28251F;
+  --border-strong:   #3A362E;
 
-  --accent:          #FF6740;   /* brighter on dark backgrounds */
-  --accent-soft:     #2A1A12;
+  --accent:          #FF6740;
+  --accent-soft:     #231610;
   --accent-deep:     #FF4D22;
 
   --status-active:   #34D399;
   --status-open:     #38BDF8;
   --status-boosted:  #FF6740;
 
+  --success:         #34D399;
+  --error:           #F87171;
+
   --background: var(--surface-base);
   --foreground: var(--text-primary);
 }
 
-/* Fallback for when WhopThemeScript hasn't fired yet */
+/* Fallback for when theme script hasn't fired */
 @media (prefers-color-scheme: dark) {
   :root:not(.dark):not([data-theme]) {
-    --surface-base:    #16140F;
-    --surface-raised:  #1F1C16;
+    --surface-base:    #131210;
+    --surface-raised:  #1C1A16;
+    --surface-sunken:  #0E0D0B;
+    --surface-glass:   rgba(28,26,22,0.8);
     --text-primary:    #F2EFE9;
     --text-secondary:  #A39C8E;
-    --border-subtle:   #2C2820;
+    --text-tertiary:   #6B645A;
+    --border-subtle:   #28251F;
+    --border-strong:   #3A362E;
     --accent:          #FF6740;
-    --accent-soft:     #2A1A12;
+    --accent-soft:     #231610;
     --accent-deep:     #FF4D22;
     --status-active:   #34D399;
     --status-open:     #38BDF8;
     --status-boosted:  #FF6740;
+    --success:         #34D399;
+    --error:           #F87171;
     --background: var(--surface-base);
     --foreground: var(--text-primary);
   }
@@ -75,7 +94,9 @@ body {
   background: var(--surface-base);
   color: var(--text-primary);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ─── Motion safety ───────────────────────────────────── */
@@ -88,43 +109,65 @@ body {
 
 /* ─── Card entrance animation ─────────────────────────── */
 @keyframes card-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0);   }
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1);      }
 }
 
 .lobby-card {
-  animation: card-in 0.25s ease both;
+  animation: card-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* Stagger via nth-child (up to 12 cards, then stops) */
-.lobby-card:nth-child(1)  { animation-delay: 0.03s; }
-.lobby-card:nth-child(2)  { animation-delay: 0.06s; }
-.lobby-card:nth-child(3)  { animation-delay: 0.09s; }
-.lobby-card:nth-child(4)  { animation-delay: 0.12s; }
-.lobby-card:nth-child(5)  { animation-delay: 0.15s; }
-.lobby-card:nth-child(6)  { animation-delay: 0.18s; }
-.lobby-card:nth-child(7)  { animation-delay: 0.21s; }
-.lobby-card:nth-child(8)  { animation-delay: 0.24s; }
-.lobby-card:nth-child(9)  { animation-delay: 0.27s; }
-.lobby-card:nth-child(10) { animation-delay: 0.30s; }
-.lobby-card:nth-child(11) { animation-delay: 0.33s; }
-.lobby-card:nth-child(12) { animation-delay: 0.36s; }
+.lobby-card:nth-child(1)  { animation-delay: 0.04s; }
+.lobby-card:nth-child(2)  { animation-delay: 0.08s; }
+.lobby-card:nth-child(3)  { animation-delay: 0.12s; }
+.lobby-card:nth-child(4)  { animation-delay: 0.16s; }
+.lobby-card:nth-child(5)  { animation-delay: 0.20s; }
+.lobby-card:nth-child(6)  { animation-delay: 0.24s; }
+.lobby-card:nth-child(7)  { animation-delay: 0.28s; }
+.lobby-card:nth-child(8)  { animation-delay: 0.32s; }
+.lobby-card:nth-child(9)  { animation-delay: 0.36s; }
+.lobby-card:nth-child(10) { animation-delay: 0.40s; }
+.lobby-card:nth-child(11) { animation-delay: 0.44s; }
+.lobby-card:nth-child(12) { animation-delay: 0.48s; }
 
 /* ─── Avatar ring system ──────────────────────────────── */
 .avatar-ring {
   border-radius: 9999px;
-  padding: 2px;
-  display: inline-block;
+  padding: 2.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.avatar-ring--active   { box-shadow: 0 0 0 2px var(--status-active); }
-.avatar-ring--open     { box-shadow: 0 0 0 2px var(--status-open); }
-.avatar-ring--boosted  { box-shadow: 0 0 0 2px var(--status-boosted); }
+.avatar-ring--active   { box-shadow: 0 0 0 2.5px var(--status-active); }
+.avatar-ring--open     { box-shadow: 0 0 0 2.5px var(--status-open); }
+.avatar-ring--boosted  { box-shadow: 0 0 0 2.5px var(--status-boosted); }
 
-/* ─── Card shadow (drops in light, none in dark) ──────── */
+/* ─── Card shadow ─────────────────────────────────────── */
 .card-shadow {
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.03);
 }
 .dark .card-shadow, [data-theme="dark"] .card-shadow {
-  box-shadow: none;
+  box-shadow: 0 0 0 1px var(--border-subtle);
 }
 
+/* ─── LIVE badge pulse ────────────────────────────────── */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+.live-pulse {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* ─── Modal/drawer backdrop blur ──────────────────────── */
+.backdrop-blur-modal {
+  backdrop-filter: blur(8px) saturate(1.2);
+  -webkit-backdrop-filter: blur(8px) saturate(1.2);
+}
+
+/* ─── Onboarding dot indicator ────────────────────────── */
+.step-dot {
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+}

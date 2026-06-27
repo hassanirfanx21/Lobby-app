@@ -9,35 +9,46 @@ export default function BuddyReveal({ buddyName }: { buddyName: string }) {
     return (
       <button
         onClick={() => setRevealed(true)}
-        className="mb-4 inline-flex items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full border transition hover:opacity-80"
+        className="mb-8 inline-flex items-center gap-2.5 text-sm font-semibold px-5 py-3 rounded-[16px] transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
         style={{
-          background: "var(--accent-soft)",
-          borderColor: "var(--accent)",
-          color: "var(--accent)",
+          background: "var(--accent)",
+          color: "#fff",
+          boxShadow: "0 4px 12px rgba(240, 76, 35, 0.2)",
         }}
       >
-        🤝 You have a buddy this week — Reveal
+        <span className="text-lg">🤝</span>
+        You have a new buddy this week! Reveal
       </button>
     );
   }
 
   return (
     <div
-      className="mb-4 rounded-xl p-4 text-sm flex items-center justify-between border"
+      className="mb-8 rounded-[16px] p-5 text-sm flex items-center justify-between border"
       style={{
-        background: "var(--accent-soft)",
-        borderColor: "var(--border-subtle)",
-        color: "var(--text-primary)",
+        background: "var(--surface-raised)",
+        borderColor: "var(--accent)",
+        boxShadow: "0 4px 12px rgba(240, 76, 35, 0.1)",
       }}
     >
-      <span>
-        🤝 Your buddy this week is{" "}
-        <strong style={{ fontFamily: "var(--font-jakarta)" }}>{buddyName}</strong>! Say hi.
-      </span>
+      <div className="flex items-center gap-3">
+        <span className="text-2xl animate-bounce">🤝</span>
+        <span style={{ color: "var(--text-primary)" }}>
+          Your buddy this week is{" "}
+          <strong style={{ fontFamily: "var(--font-jakarta)", color: "var(--accent)", fontSize: "16px" }}>
+            {buddyName}
+          </strong>
+          ! Say hi.
+        </span>
+      </div>
       <button
         onClick={() => setRevealed(false)}
-        className="text-xs ml-3 whitespace-nowrap opacity-50 hover:opacity-100 transition"
-        style={{ color: "var(--text-secondary)" }}
+        className="text-xs font-medium ml-4 whitespace-nowrap px-3 py-1.5 rounded-full border transition-colors duration-200 hover:opacity-80"
+        style={{
+          borderColor: "var(--border-strong)",
+          color: "var(--text-secondary)",
+          background: "var(--surface-base)",
+        }}
       >
         Hide
       </button>

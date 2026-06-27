@@ -29,15 +29,20 @@ export default function BuddyMatchButton({ experienceId }: { experienceId: strin
   }
 
   return (
-    <div className="mb-6">
+    <div>
       <button
         onClick={handleClick}
         disabled={isPending}
-        className="text-sm font-medium border border-neutral-300 px-4 py-2 rounded-full hover:border-neutral-400 transition disabled:opacity-50"
+        className="text-xs font-semibold border px-3 py-2 rounded-[12px] transition-all duration-200 hover:opacity-80 disabled:opacity-40 active:scale-[0.98]"
+        style={{
+          background: "var(--surface-base)",
+          borderColor: "var(--border-strong)",
+          color: "var(--text-primary)",
+        }}
       >
-        {isPending ? "Matching..." : "🤝 Run weekly buddy matching"}
+        {isPending ? "Matching..." : "🤝 Run buddy matching"}
       </button>
-      {message && <p className="text-xs text-neutral-500 mt-2">{message}</p>}
+      {message && <p className="text-xs mt-2 font-medium" style={{ color: "var(--text-secondary)" }}>{message}</p>}
     </div>
   );
 }

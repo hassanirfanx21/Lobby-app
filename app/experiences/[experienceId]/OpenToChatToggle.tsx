@@ -23,14 +23,14 @@ export default function OpenToChatToggle({
     <button
       onClick={toggle}
       disabled={isPending}
-      className="text-xs font-medium px-3 py-1.5 rounded-full border transition hover:opacity-80 disabled:opacity-50"
+      className="text-xs font-semibold px-3.5 py-2 rounded-[12px] border transition-all duration-200 hover:opacity-80 disabled:opacity-40 active:scale-[0.97]"
       style={
         open
           ? { background: "var(--status-open)", borderColor: "var(--status-open)", color: "#fff" }
-          : { background: "var(--surface-raised)", borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }
+          : { background: "var(--surface-base)", borderColor: "var(--border-strong)", color: "var(--text-secondary)" }
       }
     >
-      {open ? "💬 Open to chat · tap to end" : "💬 Open to chat"}
+      {open ? "💬 Chatting · end" : "💬 Chat"}
     </button>
   );
 }

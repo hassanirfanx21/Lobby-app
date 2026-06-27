@@ -121,67 +121,84 @@ export default async function ExperiencePage({
 
         {/* ── FRONT DESK ───────────────────────────────────── */}
         <div
-          className="rounded-2xl mb-5 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4"
-          style={{ background: "var(--accent-soft)", border: "1px solid var(--border-subtle)" }}
+          className="rounded-[20px] mb-8 p-5 sm:p-6 border"
+          style={{
+            background: "var(--surface-raised)",
+            borderColor: "var(--border-subtle)",
+          }}
         >
-          {/* Avatar + name section */}
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            {myProfile?.photo_url ? (
-              <img
-                src={myProfile.photo_url}
-                alt={myProfile.name}
-                className="w-12 h-12 rounded-full object-cover shrink-0"
-                style={{
-                  boxShadow: isMeOpenToChat() ? "0 0 0 2.5px var(--status-open)" : "0 0 0 2.5px var(--border-subtle)",
-                  padding: "2px"
-                }}
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-full shrink-0" style={{ background: "var(--border-subtle)" }} />
-            )}
-            <div className="min-w-0">
-              <p className="font-semibold truncate flex items-center gap-2" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
-                <span>{myProfile?.name ?? "Welcome to Lobby"}</span>
-                {isMeOpenToChat() && (
-                  <span className="inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
-                    style={{ background: "var(--status-open)", color: "#fff", opacity: 0.9 }}>
-                    OPEN TO CHAT
-                  </span>
-                )}
-              </p>
-              {myProfile?.status_line && (
-                <p className="text-xs truncate" style={{ color: "var(--text-secondary)" }}>{myProfile.status_line}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            {/* Avatar + info */}
+            <div className="flex items-center gap-3.5 flex-1 min-w-0">
+              {myProfile?.photo_url ? (
+                <img
+                  src={myProfile.photo_url}
+                  alt={myProfile.name}
+                  className="w-14 h-14 rounded-full object-cover shrink-0"
+                  style={{
+                    boxShadow: isMeOpenToChat()
+                      ? "0 0 0 2.5px var(--status-open)"
+                      : "0 0 0 1px var(--border-subtle)",
+                  }}
+                />
+              ) : (
+                <div
+                  className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center text-xl font-bold"
+                  style={{ background: "var(--surface-sunken)", color: "var(--text-tertiary)" }}
+                >
+                  👤
+                </div>
               )}
+              <div className="min-w-0">
+                <p
+                  className="font-bold text-base truncate flex items-center gap-2"
+                  style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}
+                >
+                  <span>{myProfile?.name ?? "Welcome to Lobby"}</span>
+                  {isMeOpenToChat() && (
+                    <span
+                      className="shrink-0 px-1.5 py-0.5 text-[9px] font-bold tracking-wider rounded"
+                      style={{ background: "var(--status-open)", color: "#fff" }}
+                    >
+                      CHATTING
+                    </span>
+                  )}
+                </p>
+                {myProfile?.status_line && (
+                  <p className="text-xs truncate mt-0.5" style={{ color: "var(--text-tertiary)" }}>
+                    {myProfile.status_line}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Actions row */}
-          <div className="flex flex-wrap items-center gap-2">
-            {myProfile && <BoostButton experienceId={experienceId} />}
-            {myProfile && (
-              <OpenToChatToggle
+            {/* Action buttons */}
+            <div className="flex items-center gap-2 shrink-0">
+              {myProfile && <BoostButton experienceId={experienceId} />}
+              {myProfile && (
+                <OpenToChatToggle
+                  experienceId={experienceId}
+                  initialOpen={!!myProfile?.open_to_chat}
+                />
+              )}
+              <Link
+                href={`/experiences/${experienceId}/profile`}
+                prefetch={false}
+                className="text-xs font-medium px-3 py-2 rounded-[12px] border transition-all duration-200 hover:opacity-80"
+                style={{
+                  background: "var(--surface-base)",
+                  borderColor: "var(--border-subtle)",
+                  color: "var(--text-secondary)",
+                }}
+              >
+                {myProfile ? "Edit" : "Set up profile"}
+              </Link>
+              <NotificationBell
+                waves={incomingWaves ?? []}
+                views={profileViews ?? []}
                 experienceId={experienceId}
-                initialOpen={!!myProfile?.open_to_chat}
               />
-            )}
-            <Link
-              href={`/experiences/${experienceId}/profile`}
-              prefetch={false}
-              className="text-xs font-medium px-3 py-1.5 rounded-full border transition hover:opacity-80"
-              style={{
-                background: "var(--surface-raised)",
-                borderColor: "var(--border-subtle)",
-                color: "var(--text-primary)",
-              }}
-            >
-              {myProfile ? "Edit profile" : "Fill profile"}
-            </Link>
-            {/* Notification bell */}
-            <NotificationBell
-              waves={incomingWaves ?? []}
-              views={profileViews ?? []}
-              experienceId={experienceId}
-            />
+            </div>
           </div>
         </div>
 
@@ -193,27 +210,67 @@ export default async function ExperiencePage({
           <BoostSpotlight experienceId={experienceId} boost={currentBoost} isAdmin={isAdmin} />
         )}
 
-        {/* ── ADMIN TOOLS ──────────────────────────────────── */}
-        {isAdmin && <BuddyMatchButton experienceId={experienceId} />}
-        {isAdmin && <DigestButton experienceId={experienceId} />}
-
         {/* ── BUDDY REVEAL ─────────────────────────────────── */}
         {buddyName && <BuddyReveal buddyName={buddyName} />}
 
         {/* ── NO-PROFILE NUDGE ─────────────────────────────── */}
         {!myProfile && (
           <div
-            className="mb-5 rounded-xl p-4 text-sm border"
-            style={{ background: "var(--accent-soft)", borderColor: "var(--border-subtle)", color: "var(--text-primary)" }}
+            className="mb-8 rounded-[16px] p-4 text-sm border flex items-center gap-3"
+            style={{
+              background: "var(--surface-raised)",
+              borderColor: "var(--border-subtle)",
+              color: "var(--text-secondary)",
+            }}
           >
-            You haven't added yourself yet — fill your profile so others can find you.
+            <span className="text-xl">📝</span>
+            <span>
+              You haven&apos;t added yourself yet —{" "}
+              <Link
+                href={`/experiences/${experienceId}/profile`}
+                className="font-semibold underline"
+                style={{ color: "var(--accent)" }}
+              >
+                fill your profile
+              </Link>{" "}
+              so others can find you.
+            </span>
+          </div>
+        )}
+
+        {/* ── ADMIN PANEL ──────────────────────────────────── */}
+        {isAdmin && (
+          <div
+            className="mb-8 rounded-[16px] p-4 border"
+            style={{
+              background: "var(--surface-raised)",
+              borderColor: "var(--border-subtle)",
+            }}
+          >
+            <p
+              className="text-xs font-bold tracking-widest uppercase mb-3"
+              style={{ color: "var(--text-tertiary)" }}
+            >
+              Admin Tools
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <BuddyMatchButton experienceId={experienceId} />
+              <DigestButton experienceId={experienceId} />
+            </div>
           </div>
         )}
 
         {/* ── ERROR ────────────────────────────────────────── */}
         {error && (
-          <div className="mb-5 rounded-xl p-4 text-sm border border-red-300 bg-red-50 text-red-700">
-            Couldn't load the directory right now. Try refreshing.
+          <div
+            className="mb-8 rounded-[16px] p-4 text-sm border"
+            style={{
+              background: "var(--surface-raised)",
+              borderColor: "var(--error)",
+              color: "var(--error)",
+            }}
+          >
+            Couldn&apos;t load the directory right now. Try refreshing.
           </div>
         )}
 

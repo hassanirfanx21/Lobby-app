@@ -43,29 +43,35 @@ export default function NotificationBell({
       key: "waves",
       content: (
         <div
-          className="p-3 rounded-xl border text-sm"
+          className="p-4 rounded-[16px] border text-sm"
           style={{
-            background: "var(--accent-soft)",
+            background: "var(--surface-sunken)",
             borderColor: "var(--border-subtle)",
             color: "var(--text-primary)",
           }}
         >
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="font-medium">👋 Waves</span>
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="font-bold flex items-center gap-2" style={{ fontFamily: "var(--font-jakarta)" }}>
+              👋 Waves
+            </span>
             <button
               onClick={() => { setWavesHidden(true); dismissWaves(experienceId); }}
-              className="text-xs opacity-50 hover:opacity-100 transition"
+              className="text-xs font-medium opacity-50 hover:opacity-100 transition-opacity"
               style={{ color: "var(--text-secondary)" }}
             >
               Dismiss
             </button>
           </div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {uniqueWaves.map((w, i) => (
               <span
                 key={i}
-                className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
-                style={{ background: "var(--surface-raised)", color: "var(--text-primary)" }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-[10px] text-xs font-medium border"
+                style={{
+                  background: "var(--surface-raised)",
+                  borderColor: "var(--border-subtle)",
+                  color: "var(--text-primary)",
+                }}
               >
                 {w.name}
                 {w.count > 1 && (
@@ -81,7 +87,7 @@ export default function NotificationBell({
                     href={`https://whop.com/@${w.username}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline font-medium"
+                    className="underline opacity-80 hover:opacity-100 transition-opacity"
                     style={{ color: "var(--accent)" }}
                   >
                     msg
@@ -100,13 +106,15 @@ export default function NotificationBell({
       key: "views",
       content: (
         <div
-          className="p-3 rounded-xl border text-sm flex items-center justify-between"
-          style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)", color: "var(--text-primary)" }}
+          className="p-4 rounded-[16px] border text-sm flex items-center justify-between gap-4"
+          style={{ background: "var(--surface-sunken)", borderColor: "var(--border-subtle)", color: "var(--text-primary)" }}
         >
-          <span>👀 {uniqueViewers.join(", ")} checked your profile this week.</span>
+          <span className="leading-snug">
+            👀 <strong style={{ fontFamily: "var(--font-jakarta)" }}>{uniqueViewers.join(", ")}</strong> checked your profile this week.
+          </span>
           <button
             onClick={() => { setViewsHidden(true); dismissProfileViews(experienceId); }}
-            className="text-xs ml-3 whitespace-nowrap opacity-50 hover:opacity-100 transition"
+            className="text-xs font-medium shrink-0 opacity-50 hover:opacity-100 transition-opacity"
             style={{ color: "var(--text-secondary)" }}
           >
             Dismiss
@@ -120,19 +128,19 @@ export default function NotificationBell({
     <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="relative w-9 h-9 flex items-center justify-center rounded-full border transition hover:opacity-80"
+        className="relative w-10 h-10 flex items-center justify-center rounded-full border transition-all duration-200 hover:opacity-80 active:scale-[0.95]"
         style={{
           background: "var(--surface-raised)",
-          borderColor: "var(--border-subtle)",
+          borderColor: "var(--border-strong)",
           color: "var(--text-primary)",
         }}
         aria-label="Notifications"
       >
-        🔔
+        <span className="text-lg">🔔</span>
         {totalUnread > 0 && (
           <span
-            className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center"
-            style={{ background: "var(--accent)", color: "#fff" }}
+            className="absolute -top-1 -right-1 w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shadow-sm"
+            style={{ background: "var(--accent)", color: "#fff", border: "2px solid var(--surface-raised)" }}
           >
             {totalUnread > 9 ? "9+" : totalUnread}
           </span>
@@ -145,17 +153,17 @@ export default function NotificationBell({
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           {/* Drawer */}
           <div
-            className="fixed left-4 right-4 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-11 z-50 sm:w-80 rounded-[20px] border shadow-lg p-4 flex flex-col gap-2"
+            className="fixed left-4 right-4 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-12 z-50 sm:w-[360px] rounded-[24px] border card-shadow p-5 flex flex-col gap-3"
             style={{
-              background: "var(--surface-base)",
+              background: "var(--surface-raised)",
               borderColor: "var(--border-subtle)",
             }}
           >
-            <p className="text-xs font-semibold px-1 mb-1" style={{ color: "var(--text-secondary)" }}>
+            <p className="text-[11px] font-bold tracking-widest px-1 mb-1" style={{ color: "var(--text-tertiary)" }}>
               ACTIVITY
             </p>
             {items.length === 0 ? (
-              <p className="text-sm text-center py-4" style={{ color: "var(--text-secondary)" }}>
+              <p className="text-sm text-center py-8 font-medium" style={{ color: "var(--text-tertiary)" }}>
                 No new activity
               </p>
             ) : (

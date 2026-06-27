@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
 import { supabase } from "@/lib/supabase";
 import ProfileForm from "./ProfileForm";
+import { getTagOptions } from "../tag-actions";
 
 export default async function ProfilePage({
   params,
@@ -25,6 +26,11 @@ export default async function ProfilePage({
     .eq("user_id", userId)
     .maybeSingle();
 
+  const [availableInterestTags, availableCoordinationTags] = await Promise.all([
+    getTagOptions(experienceId, "interest"),
+    getTagOptions(experienceId, "coordination"),
+  ]);
+
   return (
     <div className="min-h-screen p-6" style={{ background: "var(--surface-base)" }}>
       <div className="max-w-md mx-auto">
@@ -38,6 +44,8 @@ export default async function ProfilePage({
           initialBuddyOptIn={existing?.buddy_opt_in ?? false}
           initialStatusLine={existing?.status_line ?? ""}
           initialCoordinationTags={existing?.coordination_tags ?? []}
+          availableTags={availableInterestTags}
+          availableCoordinationTags={availableCoordinationTags}
         />
       </div>
     </div>

@@ -13,6 +13,7 @@ import BoostButton from "./BoostButton";
 import OpenToChatToggle from "./OpenToChatToggle";
 import BoostSpotlight from "./BoostSpotlight";
 import NotificationBell from "./NotificationBell";
+import TagSettingsButton from "./TagSettingsButton";
 
 export default async function ExperiencePage({
   params,
@@ -256,6 +257,7 @@ export default async function ExperiencePage({
             <div className="flex flex-wrap gap-2">
               <BuddyMatchButton experienceId={experienceId} />
               <DigestButton experienceId={experienceId} />
+              <TagSettingsButton experienceId={experienceId} />
             </div>
           </div>
         )}

@@ -4,20 +4,7 @@ import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfile } from "./actions";
 
-const AVAILABLE_TAGS = [
-  "Trading",
-  "Crypto",
-  "Fitness",
-  "Marketing",
-  "AI",
-  "Ecommerce",
-  "Real Estate",
-  "Content Creation",
-  "Networking",
-  "Mindset",
-  "Gaming",
-  "Design",
-];
+import { TagOption } from "../tag-actions";
 
 const ICEBREAKERS = [
   "Currently building...",
@@ -26,13 +13,7 @@ const ICEBREAKERS = [
   "Outside this community I...",
 ];
 
-const COORDINATION_OPTIONS = [
-  "📅 Free for a call this week",
-  "🎯 Looking for an accountability partner",
-  "🤝 Open to collab",
-  "💡 Open to mentoring",
-  "🙋 New, want an intro",
-];
+
 
 export default function ProfileForm({
   experienceId,
@@ -44,6 +25,8 @@ export default function ProfileForm({
   initialBuddyOptIn = false,
   initialStatusLine,
   initialCoordinationTags,
+  availableTags,
+  availableCoordinationTags,
 }: {
   experienceId: string;
   name: string;
@@ -54,6 +37,8 @@ export default function ProfileForm({
   initialBuddyOptIn: boolean;
   initialStatusLine?: string;
   initialCoordinationTags?: string[];
+  availableTags: TagOption[];
+  availableCoordinationTags: TagOption[];
 }) {
   const [bio, setBio] = useState(initialBio);
   const [tags, setTags] = useState<string[]>(initialTags);
@@ -61,6 +46,14 @@ export default function ProfileForm({
   const [buddyOptIn, setBuddyOptIn] = useState(initialBuddyOptIn ?? false);
   const [statusLine, setStatusLine] = useState(initialStatusLine ?? "");
   const [coordinationTags, setCoordinationTags] = useState<string[]>(initialCoordinationTags ?? []);
+
+  // Compute what to display based on edge case rule: if NO active tags, show deactivated ones
+  const activeInterestTags = availableTags.filter(t => t.is_active);
+  const displayInterestTags = activeInterestTags.length > 0 ? activeInterestTags : availableTags;
+
+  const activeCoordinationTags = availableCoordinationTags.filter(t => t.is_active);
+  const displayCoordinationTags = activeCoordinationTags.length > 0 ? activeCoordinationTags : availableCoordinationTags;
+
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -214,13 +207,13 @@ export default function ProfileForm({
         Tags <span style={{ color: "var(--text-secondary)" }}>(pick up to 5)</span>
       </label>
       <div className="flex flex-wrap gap-2 mb-6">
-        {AVAILABLE_TAGS.map((tag) => {
-          const active = tags.includes(tag);
+        {displayInterestTags.map((opt) => {
+          const active = tags.includes(opt.label);
           return (
             <button
               type="button"
-              key={tag}
-              onClick={() => toggleTag(tag)}
+              key={opt.id}
+              onClick={() => toggleTag(opt.label)}
               className="text-sm px-3 py-1.5 rounded-full border transition hover:opacity-80"
               style={
                 active
@@ -228,7 +221,7 @@ export default function ProfileForm({
                   : { background: "var(--surface-base)", borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }
               }
             >
-              {tag}
+              {opt.label}
             </button>
           );
         })}
@@ -238,13 +231,13 @@ export default function ProfileForm({
         Current Goals <span style={{ color: "var(--text-secondary)" }}>(pick up to 2)</span>
       </label>
       <div className="flex flex-wrap gap-2 mb-6">
-        {COORDINATION_OPTIONS.map((tag) => {
-          const active = coordinationTags.includes(tag);
+        {displayCoordinationTags.map((opt) => {
+          const active = coordinationTags.includes(opt.label);
           return (
             <button
               type="button"
-              key={tag}
-              onClick={() => toggleCoordinationTag(tag)}
+              key={opt.id}
+              onClick={() => toggleCoordinationTag(opt.label)}
               className="text-sm px-3 py-1.5 rounded-full border transition hover:opacity-80"
               style={
                 active
@@ -252,7 +245,7 @@ export default function ProfileForm({
                   : { background: "var(--surface-base)", borderColor: "var(--status-open)", color: "var(--status-open)" }
               }
             >
-              {tag}
+              {opt.label}
             </button>
           );
         })}

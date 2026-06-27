@@ -76,6 +76,18 @@ export async function addTagOption(experienceId: string, category: "interest" | 
     return { error: "Maximum of 30 tags allowed per category" };
   }
 
+  // Case-insensitive duplicate check
+  const { data: duplicates } = await supabase
+    .from("tag_options")
+    .select("id")
+    .eq("experience_id", experienceId)
+    .eq("category", category)
+    .ilike("label", cleanLabel);
+    
+  if (duplicates && duplicates.length > 0) {
+    return { error: "A tag with this name already exists" };
+  }
+
   // Use max sort_order
   const { data: maxOrderRow } = await supabase
     .from("tag_options")
@@ -112,6 +124,19 @@ export async function renameTagOption(experienceId: string, tagId: string, oldLa
   const cleanLabel = newLabel.trim();
   if (!cleanLabel) return { error: "Tag cannot be empty" };
 
+  // Case-insensitive duplicate check (excluding self)
+  const { data: duplicates } = await supabase
+    .from("tag_options")
+    .select("id")
+    .eq("experience_id", experienceId)
+    .eq("category", category)
+    .ilike("label", cleanLabel)
+    .neq("id", tagId);
+
+  if (duplicates && duplicates.length > 0) {
+    return { error: "A tag with this name already exists" };
+  }
+
   // 1. Update tag
   const { error: updateError } = await supabase
     .from("tag_options")
@@ -137,7 +162,7 @@ export async function renameTagOption(experienceId: string, tagId: string, oldLa
     for (const p of profilesToUpdate) {
       const arr = (p as any)[column] as string[];
       if (!arr) continue;
-      const newArr = arr.map(t => t === oldLabel ? cleanLabel : t);
+      const newArr = Array.from(new Set(arr.map(t => t === oldLabel ? cleanLabel : t)));
       await supabase.from("profiles").update({ [column]: newArr }).eq("id", p.id);
     }
   }

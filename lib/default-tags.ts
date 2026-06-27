@@ -10,7 +10,7 @@ export const DEFAULT_INTEREST_TAGS = [
   "Networking",
   "Mindset",
   "Gaming",
-  "Design",
+  "Designings",
 ];
 
 export const DEFAULT_COORDINATION_TAGS = [

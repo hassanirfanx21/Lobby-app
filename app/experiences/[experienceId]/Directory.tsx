@@ -129,7 +129,7 @@ export default function Directory({
     return (
       <div
         key={p.id}
-        className="lobby-card group rounded-[20px] p-5 border flex flex-col items-center text-center transition-all duration-200 hover:scale-[1.02]"
+        className="lobby-card group rounded-[20px] p-5 border flex flex-col items-center text-center transition-all duration-200 hover:scale-[1.02] min-h-[360px]"
         style={{
           background: "var(--surface-raised)",
           borderColor: "var(--border-subtle)",
@@ -139,7 +139,7 @@ export default function Directory({
         <Link
           href={`/experiences/${experienceId}/u/${p.user_id}`}
           prefetch={false}
-          className={`shrink-0 mb-3 ${ringClass}`}
+          className={`shrink-0 mb-2.5 ${ringClass}`}
         >
           {p.photo_url ? (
             <img
@@ -158,7 +158,7 @@ export default function Directory({
         </Link>
 
         {/* Badges row */}
-        <div className="flex items-center gap-1 mb-1 flex-wrap justify-center">
+        <div className="flex min-h-[18px] items-center gap-1 mb-1 flex-wrap justify-center">
           {isOpenToChatNow(p) && (
             <span
               className="px-1.5 py-0.5 text-[9px] font-bold tracking-wider rounded"
@@ -202,7 +202,7 @@ export default function Directory({
         </div>
 
         {/* Name */}
-        <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false}>
+        <Link href={`/experiences/${experienceId}/u/${p.user_id}`} prefetch={false} className="mt-0.5">
           <p
             className="font-semibold text-[15px] leading-tight"
             style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}
@@ -213,21 +213,25 @@ export default function Directory({
 
         {/* Status */}
         {p.status_line && (
-          <p className="text-xs mt-0.5 truncate max-w-full" style={{ color: "var(--text-tertiary)" }}>
+          <p className="text-xs mt-1 truncate max-w-full" style={{ color: "var(--text-tertiary)" }}>
             {p.status_line}
           </p>
         )}
 
-        {/* Bio */}
-        {p.bio && (
-          <p className="text-[13px] mt-2 line-clamp-2 leading-relaxed" style={{ color: "var(--text-secondary)" }}>
-            {p.bio}
-          </p>
-        )}
+        {/* Bio / content block */}
+        <div className="mt-2 flex min-h-[2.4rem] w-full items-start justify-center">
+          {p.bio ? (
+            <p className="text-[13px] line-clamp-2 leading-relaxed text-center" style={{ color: "var(--text-secondary)" }}>
+              {p.bio}
+            </p>
+          ) : (
+            <div className="h-[2.4rem] w-full" />
+          )}
+        </div>
 
         {/* Tags */}
         {p.tags && p.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2.5 justify-center">
+          <div className="flex flex-wrap gap-1 mt-2 justify-center">
             {p.tags.slice(0, 3).map((t) => (
               <span
                 key={t}
@@ -251,7 +255,7 @@ export default function Directory({
 
         {/* Coordination tags */}
         {p.coordination_tags && p.coordination_tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1.5 justify-center">
+          <div className="flex flex-wrap gap-1 mt-1 justify-center">
             {p.coordination_tags.map((t) => (
               <span
                 key={t}
@@ -266,13 +270,24 @@ export default function Directory({
 
         {/* Shared interests */}
         {shared.length > 0 && (
-          <p className="text-[11px] mt-2" style={{ color: "var(--success)" }}>
-            You both like {shared.join(", ")}
-          </p>
+          <div className="mt-2 mb-2 flex w-full justify-center min-h-[1.75rem]">
+            <div
+              className="inline-flex max-w-full items-center justify-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold leading-4 text-center"
+              style={{
+                background: "var(--surface-base)",
+                color: "var(--accent)",
+                border: "1px solid var(--accent)",
+                boxShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <span className="shrink-0">✨</span>
+              <span className="break-words">You both like {shared.join(", ")}</span>
+            </div>
+          </div>
         )}
 
         {/* Actions */}
-        <div className="flex gap-2 mt-auto pt-4 w-full">
+        <div className="mt-4 flex gap-2 w-full">
           {p.allow_messages && p.username && (
             <a
               href={`https://whop.com/@${p.username}`}

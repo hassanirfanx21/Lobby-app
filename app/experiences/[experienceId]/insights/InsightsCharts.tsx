@@ -73,8 +73,8 @@ export default function InsightsCharts({
 
       {/* ── Weekly Trend ─────────────────────────────────── */}
       <div
-        className="sm:col-span-2 rounded-[20px] p-5 border"
-        style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+        className="lobby-card sm:col-span-2 rounded-[20px] p-5 border transition-all duration-300 hover:shadow-sm"
+        style={{ animationDelay: "0.3s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
       >
         <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "var(--text-tertiary)" }}>
           4-Week Trend
@@ -133,8 +133,8 @@ export default function InsightsCharts({
 
       {/* ── Top Tags ─────────────────────────────────────── */}
       <div
-        className="rounded-[20px] p-5 border"
-        style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+        className="lobby-card rounded-[20px] p-5 border transition-all duration-300 hover:shadow-sm"
+        style={{ animationDelay: "0.4s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
       >
         <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "var(--text-tertiary)" }}>
           Top Tags
@@ -159,8 +159,8 @@ export default function InsightsCharts({
 
       {/* ── Profile Completion Breakdown ─────────────────── */}
       <div
-        className="rounded-[20px] p-5 border"
-        style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+        className="lobby-card rounded-[20px] p-5 border transition-all duration-300 hover:shadow-sm"
+        style={{ animationDelay: "0.5s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
       >
         <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "var(--text-tertiary)" }}>
           Profile Depth
@@ -176,8 +176,8 @@ export default function InsightsCharts({
 
       {/* ── Activity Segments ────────────────────────────── */}
       <div
-        className="sm:col-span-2 rounded-[20px] p-5 border"
-        style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+        className="lobby-card sm:col-span-2 rounded-[20px] p-5 border transition-all duration-300 hover:shadow-sm"
+        style={{ animationDelay: "0.6s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
       >
         <p className="text-xs font-bold tracking-widest uppercase mb-5" style={{ color: "var(--text-tertiary)" }}>
           Member Activity Segments

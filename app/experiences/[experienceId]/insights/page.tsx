@@ -186,11 +186,12 @@ export default async function InsightsPage({
             { label: "Profile Completion", value: `${stats.completionRate}%`, sub: "have bio + tag", icon: "✅", accent: stats.completionRate >= 60 },
             { label: "Active This Week", value: stats.activeThisWeek, sub: "visited Lobby", icon: "🟢" },
             { label: "Buddy Opt-In", value: stats.buddyOptIn, sub: `of ${stats.total} members`, icon: "🤝" },
-          ].map((kpi) => (
+          ].map((kpi, idx) => (
             <div
               key={kpi.label}
-              className="rounded-[20px] p-4 sm:p-5 border"
+              className="lobby-card rounded-[20px] p-4 sm:p-5 border transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               style={{
+                animationDelay: `${idx * 0.05}s`,
                 background: "var(--surface-raised)",
                 borderColor: kpi.accent ? "var(--status-active)" : "var(--border-subtle)",
               }}
@@ -215,8 +216,8 @@ export default async function InsightsPage({
 
         {/* ── This Week Activity ──────────────────────────── */}
         <div
-          className="rounded-[20px] p-5 border mb-6"
-          style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+          className="lobby-card rounded-[20px] p-5 border mb-6 transition-all duration-300 hover:shadow-sm"
+          style={{ animationDelay: "0.2s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
         >
           <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: "var(--text-tertiary)" }}>
             This Week's Activity
@@ -258,8 +259,8 @@ export default async function InsightsPage({
 
         {/* ── Most Active Members ─────────────────────────── */}
         <div
-          className="rounded-[20px] p-5 border"
-          style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
+          className="lobby-card rounded-[20px] p-5 border transition-all duration-300 hover:shadow-sm"
+          style={{ animationDelay: "0.7s", background: "var(--surface-raised)", borderColor: "var(--border-subtle)" }}
         >
           <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: "var(--text-tertiary)" }}>
             Most Recently Active Members

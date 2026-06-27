@@ -153,7 +153,7 @@ export default function NotificationBell({
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           {/* Drawer */}
           <div
-            className="fixed left-4 right-4 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-12 z-50 sm:w-[360px] rounded-[24px] border card-shadow p-5 flex flex-col gap-3"
+            className="fixed left-4 right-4 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-12 z-50 sm:w-[360px] max-h-[85vh] overflow-y-auto rounded-[24px] border card-shadow p-5 flex flex-col gap-3"
             style={{
               background: "var(--surface-raised)",
               borderColor: "var(--border-subtle)",

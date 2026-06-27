@@ -107,6 +107,12 @@ export default async function ExperiencePage({
       ? myMatch.name_2
       : myMatch.name_1
     : null;
+    
+  const buddyId = myMatch
+    ? myMatch.user_id_1 === userId
+      ? myMatch.user_id_2
+      : myMatch.user_id_1
+    : null;
 
   const currentBoost = await getCurrentBoost(experienceId);
   const isAdmin = access.access_level === "admin";
@@ -212,7 +218,7 @@ export default async function ExperiencePage({
         )}
 
         {/* ── BUDDY REVEAL ─────────────────────────────────── */}
-        {buddyName && <BuddyReveal buddyName={buddyName} />}
+        {buddyName && buddyId && <BuddyReveal experienceId={experienceId} buddyId={buddyId} buddyName={buddyName} />}
 
         {/* ── NO-PROFILE NUDGE ─────────────────────────────── */}
         {!myProfile && (

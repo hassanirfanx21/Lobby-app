@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
-export default function BuddyReveal({ buddyName }: { buddyName: string }) {
+export default function BuddyReveal({ experienceId, buddyId, buddyName }: { experienceId: string; buddyId: string; buddyName: string; }) {
   const [revealed, setRevealed] = useState(false);
 
   if (!revealed) {
@@ -35,9 +36,11 @@ export default function BuddyReveal({ buddyName }: { buddyName: string }) {
         <span className="text-2xl animate-bounce">🤝</span>
         <span style={{ color: "var(--text-primary)" }}>
           Your buddy this week is{" "}
-          <strong style={{ fontFamily: "var(--font-jakarta)", color: "var(--accent)", fontSize: "16px" }}>
-            {buddyName}
-          </strong>
+          <Link href={`/experiences/${experienceId}/u/${buddyId}`} prefetch={false} className="hover:underline">
+            <strong style={{ fontFamily: "var(--font-jakarta)", color: "var(--accent)", fontSize: "16px" }}>
+              {buddyName}
+            </strong>
+          </Link>
           ! Say hi.
         </span>
       </div>

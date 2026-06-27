@@ -29,7 +29,7 @@ export default function BuddyMatchButton({ experienceId }: { experienceId: strin
   }
 
   return (
-    <div>
+    <div className="relative">
       <button
         onClick={handleClick}
         disabled={isPending}
@@ -42,7 +42,7 @@ export default function BuddyMatchButton({ experienceId }: { experienceId: strin
       >
         {isPending ? "Matching..." : "🤝 Run buddy matching"}
       </button>
-      {message && <p className="text-xs mt-2 font-medium" style={{ color: "var(--text-secondary)" }}>{message}</p>}
+      {message && <p className="absolute left-0 top-[110%] z-10 text-xs font-medium w-max p-2 rounded-lg shadow-md border" style={{ background: "var(--surface-raised)", borderColor: "var(--border-subtle)", color: "var(--text-secondary)" }}>{message}</p>}
     </div>
   );
 }

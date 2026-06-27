@@ -261,6 +261,17 @@ export default async function ExperiencePage({
               Admin Tools
             </p>
             <div className="flex flex-wrap gap-2">
+              <Link
+                href={`/experiences/${experienceId}/insights`}
+                className="text-xs font-semibold border px-3 py-2 rounded-[12px] transition-all duration-200 hover:opacity-80 active:scale-[0.98]"
+                style={{
+                  background: "var(--surface-base)",
+                  borderColor: "var(--border-strong)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                📊 Insights
+              </Link>
               <BuddyMatchButton experienceId={experienceId} />
               <DigestButton experienceId={experienceId} />
               <TagSettingsButton experienceId={experienceId} />

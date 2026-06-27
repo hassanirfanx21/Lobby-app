@@ -32,8 +32,8 @@ export default function NotificationBell({
   }
   const uniqueWaves = Array.from(groupedWaves.values());
 
-  const uniqueViewers = Array.from(
-    new Map(visibleViews.map((v) => [v.viewer_user_id, v.viewer_name ?? "Someone"])).values()
+  const uniqueViewers: { userId: string; name: string }[] = Array.from(
+    new Map(visibleViews.map((v) => [v.viewer_user_id, { userId: v.viewer_user_id, name: v.viewer_name ?? "Someone" }])).values()
   );
 
   const items: { key: string; content: React.ReactNode }[] = [];
@@ -55,7 +55,7 @@ export default function NotificationBell({
               👋 Waves
             </span>
             <button
-              onClick={() => { setWavesHidden(true); dismissWaves(experienceId); }}
+              onClick={() => { setWavesHidden(true); dismissWaves(experienceId); if (visibleViews.length === 0) setOpen(false); }}
               className="text-xs font-medium opacity-50 hover:opacity-100 transition-opacity"
               style={{ color: "var(--text-secondary)" }}
             >
@@ -110,10 +110,10 @@ export default function NotificationBell({
           style={{ background: "var(--surface-sunken)", borderColor: "var(--border-subtle)", color: "var(--text-primary)" }}
         >
           <span className="leading-snug">
-            👀 <strong style={{ fontFamily: "var(--font-jakarta)" }}>{uniqueViewers.join(", ")}</strong> checked your profile this week.
+            👀 <strong style={{ fontFamily: "var(--font-jakarta)" }}>{uniqueViewers.map(v => v.name).join(", ")}</strong> checked your profile this week.
           </span>
           <button
-            onClick={() => { setViewsHidden(true); dismissProfileViews(experienceId); }}
+            onClick={() => { setViewsHidden(true); dismissProfileViews(experienceId); if (visibleWaves.length === 0) setOpen(false); }}
             className="text-xs font-medium shrink-0 opacity-50 hover:opacity-100 transition-opacity"
             style={{ color: "var(--text-secondary)" }}
           >

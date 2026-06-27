@@ -90,7 +90,8 @@ export default function Directory({
       try {
         await verifyProfile(experienceId, profileId, !currentlyVerified);
       } catch (err: any) {
-        alert(err.message ?? "Couldn't update verification.");
+        setToast(err.message ?? "Couldn't update verification.");
+        setTimeout(() => setToast(null), 3000);
       }
     });
   }
@@ -105,7 +106,8 @@ export default function Directory({
           setTimeout(() => setToast(null), 4000);
         }
       } catch (err: any) {
-        alert(err.message ?? "Couldn't send wave.");
+        setToast(err.message ?? "Couldn't send wave.");
+        setTimeout(() => setToast(null), 3000);
       }
     });
   }
@@ -181,7 +183,7 @@ export default function Directory({
               NEW
             </span>
           )}
-          {ogIds.includes(p.id) && (
+          {ogIds.includes(p.id) && !isNew(p) && (
             <span
               className="px-1.5 py-0.5 text-[9px] font-bold tracking-wider rounded"
               style={{ background: "var(--surface-sunken)", color: "var(--text-secondary)", border: "1px solid var(--border-subtle)" }}
@@ -309,6 +311,8 @@ export default function Directory({
     );
   }
 
+  const myCard = profiles.find((p) => p.user_id === currentUserId);
+
   return (
     <div>
       {/* Section label */}
@@ -335,6 +339,7 @@ export default function Directory({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Escape" && setQuery("")}
           placeholder="Search by name or tag…"
           className="w-full rounded-[14px] pl-9 pr-4 py-2.5 text-sm outline-none transition-all duration-200"
           style={{
@@ -345,6 +350,13 @@ export default function Directory({
           onFocus={(e) => (e.currentTarget.style.borderColor = "var(--border-strong)")}
           onBlur={(e) => (e.currentTarget.style.borderColor = "var(--border-subtle)")}
         />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs hover:opacity-80"
+            style={{ color: "var(--text-tertiary)" }}
+          >✕</button>
+        )}
       </div>
 
       {/* Empty state */}

@@ -11,7 +11,7 @@ export async function runBuddyMatching(experienceId: string) {
   const { userId } = await whopsdk.verifyUserToken(await headers());
   const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
   if (access.access_level !== "admin") {
-    throw new Error("Only the community admin can run buddy matching.");
+    return { error: "Only the community admin can run buddy matching." };
   }
 
   const experience = await whopsdk.experiences.retrieve(experienceId);
@@ -27,7 +27,7 @@ export async function runBuddyMatching(experienceId: string) {
     .limit(1);
 
   if (existingMatches && existingMatches.length > 0) {
-    throw new Error("Buddy matching already ran for this week.");
+    return { error: "Buddy matching already ran for this week." };
   }
 
   const { data: candidates, error: fetchError } = await supabase
@@ -36,9 +36,9 @@ export async function runBuddyMatching(experienceId: string) {
     .eq("experience_id", experienceId)
     .eq("buddy_opt_in", true);
 
-  if (fetchError) throw new Error(fetchError.message);
+  if (fetchError) return { error: fetchError.message };
   if (!candidates || candidates.length < 2) {
-    throw new Error("Need at least 2 people opted into Buddy Matching.");
+    return { error: "Need at least 2 people opted into Buddy Matching." };
   }
 
   const previousWeekLabel = getPreviousWeekLabel(weekLabel);
@@ -77,7 +77,7 @@ export async function runBuddyMatching(experienceId: string) {
   }
 
   const { error: insertError } = await supabase.from("buddy_matches").insert(pairs);
-  if (insertError) throw new Error(insertError.message);
+  if (insertError) return { error: insertError.message };
 
   for (const pair of pairs) {
     await sendPushNotification({

@@ -14,12 +14,16 @@ export default function BuddyMatchButton({ experienceId }: { experienceId: strin
     startTransition(async () => {
       try {
         const result = await runBuddyMatching(experienceId);
+        if (result.error) {
+          setMessage(result.error);
+          return;
+        }
         setMessage(
           `Matched ${result.matched} people!${result.leftOver ? " (1 person left over this week)" : ""}`
         );
         router.refresh();
       } catch (err: any) {
-        setMessage(err.message ?? "Something went wrong.");
+        setMessage("Something went wrong.");
       }
     });
   }

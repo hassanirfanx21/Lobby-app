@@ -145,7 +145,7 @@ export default function NotificationBell({
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           {/* Drawer */}
           <div
-            className="absolute right-0 top-11 z-50 w-80 rounded-2xl border shadow-lg p-3 flex flex-col gap-2"
+            className="fixed left-4 right-4 top-20 sm:absolute sm:inset-auto sm:right-0 sm:top-11 z-50 sm:w-80 rounded-[20px] border shadow-lg p-4 flex flex-col gap-2"
             style={{
               background: "var(--surface-base)",
               borderColor: "var(--border-subtle)",

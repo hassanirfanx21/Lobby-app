@@ -21,6 +21,7 @@ type CompletionStats = {
   inactive: number;
 };
 
+
 function Bar({
   value,
   max,

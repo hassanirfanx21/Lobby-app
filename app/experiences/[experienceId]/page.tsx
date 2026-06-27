@@ -110,6 +110,11 @@ export default async function ExperiencePage({
   const currentBoost = await getCurrentBoost(experienceId);
   const isAdmin = access.access_level === "admin";
 
+  const isMeOpenToChat = () => {
+    if (!myProfile?.open_to_chat || !myProfile?.open_to_chat_until) return false;
+    return new Date(myProfile.open_to_chat_until).getTime() > Date.now();
+  };
+
   return (
     <div className="min-h-screen p-4 sm:p-6" style={{ background: "var(--surface-base)" }}>
       <div className="max-w-5xl mx-auto">
@@ -126,14 +131,23 @@ export default async function ExperiencePage({
                 src={myProfile.photo_url}
                 alt={myProfile.name}
                 className="w-12 h-12 rounded-full object-cover shrink-0"
-                style={{ boxShadow: "0 0 0 2.5px var(--accent)" }}
+                style={{
+                  boxShadow: isMeOpenToChat() ? "0 0 0 2.5px var(--status-open)" : "0 0 0 2.5px var(--border-subtle)",
+                  padding: "2px"
+                }}
               />
             ) : (
               <div className="w-12 h-12 rounded-full shrink-0" style={{ background: "var(--border-subtle)" }} />
             )}
             <div className="min-w-0">
-              <p className="font-semibold truncate" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
-                {myProfile?.name ?? "Welcome to Lobby"}
+              <p className="font-semibold truncate flex items-center gap-2" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
+                <span>{myProfile?.name ?? "Welcome to Lobby"}</span>
+                {isMeOpenToChat() && (
+                  <span className="inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
+                    style={{ background: "var(--status-open)", color: "#fff", opacity: 0.9 }}>
+                    OPEN TO CHAT
+                  </span>
+                )}
               </p>
               {myProfile?.status_line && (
                 <p className="text-xs truncate" style={{ color: "var(--text-secondary)" }}>{myProfile.status_line}</p>

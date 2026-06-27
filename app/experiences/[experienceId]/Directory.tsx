@@ -160,6 +160,12 @@ export default function Directory({
             <p className="font-semibold leading-snug" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
               {p.name}
               {/* History badges — flat pills next to name */}
+              {isOpenToChatNow(p) && (
+                <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
+                  style={{ background: "var(--status-open)", color: "#fff", opacity: 0.9 }}>
+                  OPEN TO CHAT
+                </span>
+              )}
               {isNew(p) && (
                 <span className="ml-2 inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider rounded"
                   style={{ background: "var(--status-active)", color: "#fff", opacity: 0.9 }}>

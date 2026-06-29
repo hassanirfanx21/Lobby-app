@@ -312,6 +312,14 @@ export default async function ExperiencePage({
           boostedUserId={currentBoost?.user_id ?? null}
         />
       </div>
+
+      <footer className="w-full mt-6 py-4">
+        <div className="max-w-5xl mx-auto text-center" style={{ color: "var(--text-tertiary)", fontSize: 12 }}>
+          <a href="/privacy" style={{ color: "var(--text-tertiary)", marginRight: 8 }}>Privacy Policy</a>
+          <span style={{ margin: "0 8px" }}>·</span>
+          <a href="/terms" style={{ color: "var(--text-tertiary)", marginLeft: 8 }}>Terms of Service</a>
+        </div>
+      </footer>
     </div>
   );
 }

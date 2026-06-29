@@ -14,7 +14,7 @@ export function UpgradeBanner({
       experienceId,
       `${window.location.origin}/experiences/${experienceId}`
     );
-    window.location.href = url;
+    window.open(url, "_blank");
   }
 
   return (

@@ -59,11 +59,14 @@ async function notifyAdminsOfLimit(experienceId: string, profileCount: number) {
 
   if (data?.threshold_notified_at) return;
 
-  await supabase.from("billing_status").upsert({
-    experience_id: experienceId,
-    plan: "free",
-    threshold_notified_at: new Date().toISOString(),
-  });
+  await supabase.from("billing_status").upsert(
+    {
+      experience_id: experienceId,
+      plan: "free",
+      threshold_notified_at: new Date().toISOString(),
+    },
+    { onConflict: "experience_id" }
+  );
 
   const experience = await whopsdk.experiences.retrieve(experienceId);
   const companyId = experience.company.id;

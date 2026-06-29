@@ -16,6 +16,8 @@ export default function PrivacyPage() {
             </h1>
             <p style={{ color: "var(--text-tertiary)", marginBottom: 18 }}>
               Last updated: [Month Year]
+              <br />
+              29/06/2026
             </p>
 
             <section style={{ marginBottom: 12 }}>
@@ -114,32 +116,10 @@ export default function PrivacyPage() {
               </p>
             </section>
 
-            <section style={{ marginBottom: 12 }}>
-              <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                7. Data Retention
-              </h2>
-              <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                Your data is retained for as long as your community uses Lobby. If your profile is
-                deleted or the community owner removes Lobby, associated data is eligible for
-                deletion on request.
-              </p>
-            </section>
 
             <section style={{ marginBottom: 12 }}>
               <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                8. Your Rights
-              </h2>
-              <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                You can delete your own Lobby profile at any time from within the app. If you
-                want us to delete all data associated with your account (including waves, views,
-                and match history), contact us at embermindofficialx21@gmail.com and we will
-                process the request within 30 days.
-              </p>
-            </section>
-
-            <section style={{ marginBottom: 12 }}>
-              <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                9. Children
+                7. Children
               </h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 Lobby is not directed at children under 13. We do not knowingly collect data from
@@ -150,7 +130,7 @@ export default function PrivacyPage() {
 
             <section style={{ marginBottom: 12 }}>
               <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                10. Changes to This Policy
+                8. Changes to This Policy
               </h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 We may update this policy from time to time. Material changes will be noted by
@@ -161,7 +141,7 @@ export default function PrivacyPage() {
 
             <section style={{ marginBottom: 40 }}>
               <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                11. Contact
+                9. Contact
               </h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 For any privacy-related questions or data deletion requests: embermindofficialx21@gmail.com

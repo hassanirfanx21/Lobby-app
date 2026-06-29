@@ -15,6 +15,8 @@ export default function TermsPage() {
             </h1>
             <p style={{ color: "var(--text-tertiary)", marginBottom: 18 }}>
               Last updated: [Month Year]
+              <br />
+              29/06/2026
             </p>
 
             <section style={{ marginBottom: 12 }}>
@@ -105,17 +107,7 @@ export default function TermsPage() {
 
             <section style={{ marginBottom: 12 }}>
               <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                8. Governing Law
-              </h2>
-              <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                These Terms are governed by the laws of [your jurisdiction — e.g. Pakistan /
-                England / etc.]. Disputes will be resolved in the courts of that jurisdiction.
-              </p>
-            </section>
-
-            <section style={{ marginBottom: 12 }}>
-              <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                9. Changes
+                8. Changes
               </h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 We may update these Terms from time to time. Continued use of Lobby after
@@ -126,7 +118,7 @@ export default function TermsPage() {
 
             <section style={{ marginBottom: 40 }}>
               <h2 style={{ color: "var(--text-primary)", fontSize: 16, marginBottom: 6 }}>
-                10. Contact
+                9. Contact
               </h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.6 }}>
                 Questions about these Terms: embermindofficialx21@gmail.com

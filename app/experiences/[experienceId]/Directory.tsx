@@ -4,6 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { verifyProfile } from "./badge-actions";
 import { sendWave } from "./wave-actions";
+import { UpgradeBanner } from "./UpgradeBanner";
 
 type Profile = {
   id: string;
@@ -29,12 +30,16 @@ export default function Directory({
   currentUserId,
   experienceId,
   isAdmin,
+  isPro,
+  profileCount,
   boostedUserId,
 }: {
   profiles: Profile[];
   currentUserId: string;
   experienceId: string;
   isAdmin?: boolean;
+  isPro?: boolean;
+  profileCount?: number;
   boostedUserId?: string | null;
 }) {
   const [query, setQuery] = useState("");
@@ -121,6 +126,8 @@ export default function Directory({
       p.tags?.some((t) => t.toLowerCase().includes(q))
     );
   });
+
+  const shouldShowAdminUpgradeBanner = isAdmin && !isPro && profileCount !== undefined && profileCount >= 50;
 
   function renderCard(p: Profile) {
     const ringClass = avatarRingClass(p);
@@ -330,6 +337,11 @@ export default function Directory({
 
   return (
     <div>
+      {shouldShowAdminUpgradeBanner && (
+        <div className="mb-6">
+          <UpgradeBanner experienceId={experienceId} profileCount={profileCount ?? 0} />
+        </div>
+      )}
       {/* Section label */}
       <div className="flex items-center gap-3 mb-4">
         <p

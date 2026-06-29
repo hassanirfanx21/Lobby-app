@@ -114,7 +114,11 @@ export default function ProfileForm({
 
     startTransition(async () => {
       try {
-        await saveProfile(formData);
+        const result = await saveProfile(formData);
+        if (!result?.success) {
+          setError(result?.message ?? "Something went wrong. Try again.");
+          return;
+        }
         setSaved(true);
         setTimeout(() => router.push(`/experiences/${experienceId}`), 800);
       } catch (err: any) {

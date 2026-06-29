@@ -4,6 +4,8 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { getWeekLabel } from "@/lib/week";
 import InsightsCharts from "./InsightsCharts";
+import { getBillingStatus } from "../billing-actions";
+import { UpgradeBanner } from "../UpgradeBanner";
 
 export default async function InsightsPage({
   params,
@@ -18,6 +20,23 @@ export default async function InsightsPage({
     return (
       <div className="flex items-center justify-center min-h-screen p-6" style={{ background: "var(--surface-base)" }}>
         <p style={{ color: "var(--text-secondary)" }}>Admin access required.</p>
+      </div>
+    );
+  }
+
+  const { isPro, profileCount } = await getBillingStatus(experienceId);
+  if (!isPro) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ background: "var(--surface-base)" }}>
+        <div className="max-w-xl rounded-[24px] p-8 text-center" style={{ background: "var(--surface-raised)", border: "1px solid var(--border-subtle)" }}>
+          <h2 className="text-2xl font-bold mb-3" style={{ color: "var(--text-primary)", fontFamily: "var(--font-jakarta)" }}>
+            Insights is a Lobby Pro feature
+          </h2>
+          <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
+            Your community has {profileCount} active profiles. Upgrade to see completion rates, weekly trends, and engagement data.
+          </p>
+          <UpgradeBanner experienceId={experienceId} profileCount={profileCount} />
+        </div>
       </div>
     );
   }

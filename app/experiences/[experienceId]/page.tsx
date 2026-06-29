@@ -9,6 +9,8 @@ import BuddyReveal from "./BuddyReveal";
 import DigestButton from "./DigestButton";
 import WelcomeAndTutorial from "./WelcomeAndTutorial";
 import { getCurrentBoost } from "./boost-actions";
+import { getBillingStatus } from "./billing-actions";
+import { UpgradeBanner } from "./UpgradeBanner";
 import BoostButton from "./BoostButton";
 import OpenToChatToggle from "./OpenToChatToggle";
 import BoostSpotlight from "./BoostSpotlight";
@@ -116,6 +118,7 @@ export default async function ExperiencePage({
 
   const currentBoost = await getCurrentBoost(experienceId);
   const isAdmin = access.access_level === "admin";
+  const { isPro, profileCount } = await getBillingStatus(experienceId);
 
   const isMeOpenToChat = () => {
     if (!myProfile?.open_to_chat || !myProfile?.open_to_chat_until) return false;
@@ -276,6 +279,11 @@ export default async function ExperiencePage({
               <DigestButton experienceId={experienceId} />
               <TagSettingsButton experienceId={experienceId} />
             </div>
+            {!isPro && profileCount !== undefined && profileCount >= 50 && (
+              <div className="mt-4">
+                <UpgradeBanner experienceId={experienceId} profileCount={profileCount} />
+              </div>
+            )}
           </div>
         )}
 
@@ -299,6 +307,8 @@ export default async function ExperiencePage({
           currentUserId={userId}
           experienceId={experienceId}
           isAdmin={isAdmin}
+          isPro={isPro}
+          profileCount={profileCount}
           boostedUserId={currentBoost?.user_id ?? null}
         />
       </div>

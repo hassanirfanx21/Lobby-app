@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { whopsdk } from "@/lib/whop-sdk";
 import { supabase } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { canCreateNewProfile } from "../billing-actions";
 
 export async function saveProfile(formData: FormData) {
   const experienceId = formData.get("experienceId") as string;
@@ -18,6 +19,11 @@ export async function saveProfile(formData: FormData) {
   const access = await whopsdk.users.checkAccess(experienceId, { id: userId });
   if (!access.has_access) {
     throw new Error("Access denied");
+  }
+
+  const gate = await canCreateNewProfile(experienceId, userId);
+  if (!gate.allowed) {
+    return { success: false, message: gate.message };
   }
 
   const experience = await whopsdk.experiences.retrieve(experienceId);
@@ -88,4 +94,6 @@ export async function saveProfile(formData: FormData) {
 
   revalidatePath(`/experiences/${experienceId}`);
   revalidatePath(`/experiences/${experienceId}/profile`);
+
+  return { success: true };
 }

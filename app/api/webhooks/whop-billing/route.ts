@@ -5,6 +5,7 @@ import type { NextRequest } from "next/server";
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const headers = Object.fromEntries(request.headers);
+
   const event = whopsdk.webhooks.unwrap(body, { headers });
 
   let experienceId: string | undefined;

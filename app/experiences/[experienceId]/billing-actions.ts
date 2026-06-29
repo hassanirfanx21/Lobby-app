@@ -96,5 +96,5 @@ export async function setBillingPlan(experienceId: string, plan: "free" | "pro")
   } else {
     payload.upgraded_at = null;
   }
-  await supabase.from("billing_status").upsert(payload);
+  await supabase.from("billing_status").upsert(payload, { onConflict: "experience_id" });
 }

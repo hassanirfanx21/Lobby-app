@@ -15,7 +15,7 @@ export default function PrivacyPage() {
               Lobby — Privacy Policy
             </h1>
             <p style={{ color: "var(--text-tertiary)", marginBottom: 18 }}>
-              Last updated: [Month Year]
+              Last updated:
               <br />
               29/06/2026
             </p>

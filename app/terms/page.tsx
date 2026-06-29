@@ -14,7 +14,7 @@ export default function TermsPage() {
               Lobby — Terms of Service
             </h1>
             <p style={{ color: "var(--text-tertiary)", marginBottom: 18 }}>
-              Last updated: [Month Year]
+              Last updated:
               <br />
               29/06/2026
             </p>
